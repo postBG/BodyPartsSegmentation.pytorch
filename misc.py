@@ -1,12 +1,11 @@
-import os
 import json
+import os
 import random
 from datetime import date
 
 import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
-from torch import __init__
 
 
 def _get_experiment_index(experiment_path):
