@@ -63,7 +63,7 @@ class RecentModelLogger(AbstractBaseLogger):
 
 
 class BestModelLogger(AbstractBaseLogger):
-    def __init__(self, checkpoint_path, metric_key='mIOU', filename='best_acc_model.pth'):
+    def __init__(self, checkpoint_path, metric_key='mean_iou', filename='best_acc_model.pth'):
         self.checkpoint_path = checkpoint_path
         if not os.path.exists(self.checkpoint_path):
             os.mkdir(self.checkpoint_path)
@@ -81,9 +81,9 @@ class BestModelLogger(AbstractBaseLogger):
 
 
 class MetricGraphPrinter(AbstractBaseLogger):
-    def __init__(self, writer, key='train_loss', graph_label='Train Loss', group_name='metric'):
+    def __init__(self, writer, key='train_loss', graph_name='Train Loss', group_name='metric'):
         self.key = key
-        self.graph_label = graph_label
+        self.graph_label = graph_name
         self.group_name = group_name
         self.writer = writer
 

@@ -19,8 +19,10 @@ parser.add_argument('--test', type=bool, default=False, help='is Test')
 parser.add_argument('--batch_size', type=int, default=128, help='Batch Size')
 parser.add_argument('--optimizer', type=str, default='SGD', choices=['SGD', 'Adam'], help='Optimizer')
 parser.add_argument('--backed_model', type=str, default='resnet50', help='Model: resnet50 | resnet101 | resnet152')
-parser.add_argument('--seg_model', type=str, default='fcn', help='Seg Model (default: fcn)')
+parser.add_argument('--seg_model', type=str, default='deeplab_v3', help='Seg Model (default: deeplab_v3)')
 parser.add_argument('--random_seed', type=int, default=0, help='Random seed value')
+parser.add_argument('--train_transform_type', type=str, default='none', help='Train data set transform type')
+parser.add_argument('--val_transform_type', type=str, default='none', help='Val data set transform type')
 
 #########################
 # Experiment Logging Settings
