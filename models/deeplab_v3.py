@@ -1,18 +1,19 @@
 import torch.nn as nn
 import torch.nn.functional as F
-from .backbone import Xception
+
+import models.backbone as bb
+import models.module as module
+
 
 class DeepLab(nn.Module):
-    def __init__(self, backbone='resnet', output_stride=16, num_classes=21, freeze_bn=False):
+    def __init__(self, backbone='xception', output_stride=16, num_classes=6, freeze_bn=False):
         super(DeepLab, self).__init__()
-        if backbone == 'drn':
-            output_stride = 8
 
         BatchNorm = nn.BatchNorm2d
 
-        self.backbone = Xception.AlignedXception(backbone, output_stride, BatchNorm)
-        self.aspp = build_aspp(backbone, output_stride, BatchNorm)
-        self.decoder = build_decoder(num_classes, backbone, BatchNorm)
+        self.backbone = bb.get_backbone(backbone, output_stride, BatchNorm, pretrained=True)
+        self.aspp = module.get_aspp(inplanes=2048, output_stride=output_stride, BatchNorm=BatchNorm)
+        self.decoder = module.get_decoder(num_classes=num_classes, BatchNorm=BatchNorm)
 
         if freeze_bn:
             self.freeze_bn()

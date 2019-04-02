@@ -1,5 +1,4 @@
 import math
-import torch
 import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 import torch.nn.functional as F
@@ -13,6 +12,7 @@ def fixed_padding(inputs, kernel_size, dilation):
     # pad last dim(w) and 2nd to last dim(h) by (pad_beg, pad_end)
     padded_inputs = F.pad(inputs, (pad_beg, pad_end, pad_beg, pad_end))
     return padded_inputs
+
 
 # order of pointwise and depth wise doesn't matter + pretrained model follows the original
 class SeparableConv2d(nn.Module):
@@ -96,8 +96,7 @@ class AlignedXception(nn.Module):
     """
     Modified Alighed Xception
     """
-    def __init__(self, output_stride, BatchNorm,
-                 pretrained=True):
+    def __init__(self, output_stride, BatchNorm, pretrained=True):
         super(AlignedXception, self).__init__()
 
         if output_stride == 16:
@@ -126,17 +125,17 @@ class AlignedXception(nn.Module):
                             start_with_relu=True, grow_first=True, is_last=True)
 
         # Middle flow
-        self.block4  = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
+        self.block4 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
                              BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
-        self.block5  = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
+        self.block5 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
                              BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
-        self.block6  = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
+        self.block6 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
                              BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
-        self.block7  = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
+        self.block7 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
                              BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
-        self.block8  = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
+        self.block8 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
                              BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
-        self.block9  = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
+        self.block9 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
                              BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
         self.block10 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
                              BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
