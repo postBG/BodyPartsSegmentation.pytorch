@@ -43,7 +43,7 @@ class Block(nn.Module):
         else:
             self.skip = None
 
-        self.relu = nn.ReLU(inplanes=True)
+        self.relu = nn.ReLU(inplace=True)
         rep = []
 
         filters = inplanes

@@ -18,7 +18,7 @@ class AtrousLayer(nn.Module):
     def __init__(self, inplanes, planes, kernel_size=3, stride=1, dilation=1, bias=False, BatchNorm=None):
         super(AtrousLayer, self).__init__()
 
-        self.conv = nn.Conv2d(inplanes, planes, kernel_size=kernel_size, stride=stride, dilation=dilation, bias=bias, BatchNorm=None)
+        self.conv = nn.Conv2d(inplanes, planes, kernel_size=kernel_size, stride=stride, dilation=dilation, bias=bias)
         self.bn = BatchNorm(planes)
         self.relu = nn.ReLU()
 
@@ -49,7 +49,7 @@ class SpecialPooling(nn.Module):
         self.gab = nn.AvgPool2d(kernel_size=1)
         self.conv = nn.Conv2d(inplanes, planes, 1, 1, 0, 1, bias=bias)
         self.bn = BatchNorm(planes)
-        self.relu = nn.Relu()
+        self.relu = nn.ReLU()
 
         self._init_weight()
 
@@ -83,14 +83,14 @@ class ASPP(nn.Module):
         else:
             dilation = [12, 24, 36]
 
-        self.conv1 = nn.Conv2d(inplanes, filters, kernel_size=1, stride=1, padding=0, dilation=1, BatchNorm=BatchNorm)
-        self.conv2 = AtrousLayer(filters, filters, kernel_size=3, stride=1, dilation=dilation[0], bias=False, BatchNorm=None)
-        self.conv3 = AtrousLayer(filters, filters, kernel_size=3, stride=1, dilation=dilation[1], bias=False, BatchNorm=None)
-        self.conv4 = AtrousLayer(filters, filters, kernel_size=3, stride=1, dilation=dilation[2], bias=False, BatchNorm=None)
+        self.conv1 = nn.Conv2d(inplanes, filters, kernel_size=1, stride=1, padding=0, dilation=1)
+        self.conv2 = AtrousLayer(inplanes, filters, kernel_size=3, stride=1, dilation=dilation[0], bias=False, BatchNorm=BatchNorm)
+        self.conv3 = AtrousLayer(inplanes, filters, kernel_size=3, stride=1, dilation=dilation[1], bias=False, BatchNorm=BatchNorm)
+        self.conv4 = AtrousLayer(inplanes, filters, kernel_size=3, stride=1, dilation=dilation[2], bias=False, BatchNorm=BatchNorm)
 
-        self.image_pooling = SpecialPooling(inplanes=filters, planes=filters, BatchNorm=BatchNorm)
+        self.image_pooling = SpecialPooling(inplanes, filters, BatchNorm=BatchNorm)
 
-        self.last_conv = nn.Conv2d(5 * filters, filters, kernel_size=1, stride=1, padding=0, dilation=1, BatchNorm=BatchNorm)
+        self.last_conv = nn.Conv2d(5 * filters, filters, kernel_size=1, stride=1, padding=0, dilation=1)
         self.bn = BatchNorm(filters)
         self.relu = nn.ReLU()
 

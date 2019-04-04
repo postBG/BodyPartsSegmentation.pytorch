@@ -6,6 +6,7 @@ import torch.nn.functional as F
 
 class Decoder(nn.Module):
     def __init__(self, num_classes, BatchNorm=None):
+        super(Decoder, self).__init__()
         filters = 256
 
         self.low_conv = nn.Conv2d(128, filters, 1, 1, 0, 1, 1, bias=False)
@@ -22,7 +23,7 @@ class Decoder(nn.Module):
         low_input = self.relu(low_input)  # output_stride: 8
         x = F.interpolate(x, size=low_input.size()[2:], mode='bilinear', align_corners=True)
 
-        output = torch.act((low_input, x), dim=1)
+        output = torch.cat((low_input, x), dim=1)
         output = self.refine_conv(output)
 
         return output
