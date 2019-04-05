@@ -1,16 +1,15 @@
-from os.path import expanduser
-import numpy as np
 import os
+from os.path import expanduser
 
-# TODO: Set this value
+import numpy as np
 from PIL import Image
-from torch.utils.data import Dataset
 from torch.utils.data import DataLoader
-from torchvision import transforms as tr
+from torch.utils.data import Dataset
+
 DEFAULT_ROOT = "%s/VOCdevkit/" % expanduser("~")
 
-
 from datasets.utils import JointToTensor
+
 # TODO: Calculate This
 CLASS_WEIGHT = []
 
@@ -43,11 +42,9 @@ class PascalPartsDataSet(Dataset):
                 for image in f:
                     self.image_list.append(image.replace("\n", ""))
 
-
         self.joint_transform = joint_transform
         self.img_transform = img_transform
         self.mask_transform = mask_transform
-        pass
 
     def __len__(self):
         return len(self.image_list)
@@ -64,7 +61,6 @@ class PascalPartsDataSet(Dataset):
         if self.mask_transform:
             mask = self.mask_transform(mask)
         return img, mask
-
 
 
 if __name__ == "__main__":
