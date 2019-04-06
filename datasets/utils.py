@@ -3,7 +3,7 @@ import torch
 from PIL import Image
 import numpy as np
 from torch.utils.data import Dataset
-from torchvision.transforms import ToTensor
+from torchvision.transforms import ToTensor, Resize
 
 
 class Compose(object):
@@ -64,16 +64,17 @@ class CenterCrop(object):
         return img.crop((x1, y1, x1 + tw, y1 + th)), mask.crop((x1, y1, x1 + tw, y1 + th))
 
 
-class Scale(object):
-    def __init__(self, height):
-        self.height = height
+class JointResize(object):
+    """pil to pil"""
+
+    def __init__(self, height, width):
+        size = (height, width)
+        self.img_resize_transform = Resize(size, Image.BILINEAR)
+        self.mask_resize_transform = Resize(size, Image.NEAREST)
 
     def __call__(self, img, mask):
         assert img.size == mask.size
-        w, h = img.size
-        oh = self.height
-        ow = int(self.height * w / h)
-        return img.resize((ow, oh), Image.BILINEAR), mask.resize((ow, oh), Image.NEAREST)
+        return self.img_resize_transform(img), self.mask_resize_transform(mask)
 
 
 class JointToTensor(object):
@@ -81,7 +82,7 @@ class JointToTensor(object):
         self.totensor = ToTensor()
 
     def __call__(self, img, mask):
-        return self.totensor(img), torch.from_numpy(np.array(mask))
+        return self.totensor(img), torch.from_numpy(np.array(mask).astype(np.int))
 
 
 class CombinedDataSet(Dataset):

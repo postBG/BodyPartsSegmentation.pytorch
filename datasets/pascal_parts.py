@@ -1,12 +1,8 @@
 import os
 from os.path import expanduser
 
-import numpy as np
 from PIL import Image
-from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
-
-from datasets.utils import JointToTensor
 
 # TODO: Calculate This
 CLASS_WEIGHT = []
@@ -24,11 +20,10 @@ DEFAULT_ROOT = "%s/VOCdevkit/" % expanduser("~")
 
 class PascalPartsDataSet(Dataset):
     def __init__(self, root=DEFAULT_ROOT,
-                 joint_transform=JointToTensor(),
+                 joint_transform=None,
                  img_transform=None,
                  mask_transform=None,
-                 is_train=False,
-                 sliding_crop=None, ):
+                 is_train=False):
         self.images_dir = os.path.join(root, "VOC2010/JPEGImages/")
         self.labels_dir = os.path.join(root, "Annotations_Part")
 
@@ -61,10 +56,3 @@ class PascalPartsDataSet(Dataset):
         if self.mask_transform:
             mask = self.mask_transform(mask)
         return img, mask
-
-
-if __name__ == "__main__":
-
-    for img, label in DataLoader(PascalPartsDataSet()):
-        print(np.shape(img), np.shape(label), np.unique(label))
-        break

@@ -2,7 +2,6 @@ import numpy as np
 from scipy.io import loadmat
 from skimage.io import imread
 from skimage.measure import regionprops
-from PIL import Image
 
 from datasets.part2ind import get_pimap
 
@@ -87,28 +86,3 @@ class PascalPart(PascalBase):
     def __init__(self, obj):
         super(PascalPart, self).__init__(obj)
         self.part_name = obj['part_name'][0]
-
-
-from os.path import expanduser
-import os
-
-DEFAULT_ROOT = "%s/VOCdevkit/" % expanduser("~")
-
-if __name__ == "__main__":
-    images_dir = os.path.join(DEFAULT_ROOT, "VOC2010/JPEGImages/")
-    labels_dir = os.path.join(DEFAULT_ROOT, "Annotations_Part")
-
-    image_list = []
-
-    with open("%s/trainval.txt" % DEFAULT_ROOT, "r") as f:
-        for image in f:
-            image_list.append(image.replace("\n", ""))
-
-    for image in image_list:
-        im_path = os.path.join(images_dir, image + ".jpg")
-        label_path = os.path.join(labels_dir, image + ".mat")
-
-        mask = ImageAnnotation(im_path, label_path).part_mask
-        img = Image.fromarray(mask).convert("P")
-        print(np.shape(img))
-        img.save(label_path.replace(".mat", ".png"))
