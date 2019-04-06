@@ -188,3 +188,4 @@ pip-selfcheck.json
 # ssh
 *.pem 
 *.ppk
+ncsoft/
