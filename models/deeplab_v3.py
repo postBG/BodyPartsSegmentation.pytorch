@@ -9,11 +9,9 @@ class DeepLab(nn.Module):
     def __init__(self, backbone='xception', output_stride=16, num_classes=25, freeze_bn=False):
         super(DeepLab, self).__init__()
 
-        BatchNorm = nn.BatchNorm2d
-
-        self.backbone = get_backbone(backbone, output_stride, BatchNorm, pretrained=True)
-        self.aspp = get_aspp(inplanes=2048, output_stride=output_stride, BatchNorm=BatchNorm)
-        self.decoder = get_decoder(num_classes=num_classes, BatchNorm=BatchNorm)
+        self.backbone = get_backbone(backbone, output_stride, nn.BatchNorm2d, pretrained=True)
+        self.aspp = get_aspp(inplanes=2048, output_stride=output_stride, BatchNorm=nn.BatchNorm2d)
+        self.decoder = get_decoder(num_classes=num_classes, BatchNorm=nn.BatchNorm2d)
 
         if freeze_bn:
             self.freeze_bn()
