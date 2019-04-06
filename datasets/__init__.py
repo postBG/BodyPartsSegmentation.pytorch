@@ -3,14 +3,14 @@ import numpy as np
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader, Subset
 
-from datasets.utils import JointToTensor, RandomHorizontalFlip, RandomCrop
+from datasets.utils import JointToTensor, RandomHorizontalFlip, RandomCrop, JointResize
 from datasets.pascal_parts import PascalPartsDataSet, STATISTICS_SET
 
 
 def get_joint_transform(transform_type):
     transformations = {
-        'none': JointToTensor(),
-        'none_val': JointToTensor(),
+        'none': transforms.Compose([JointResize(513, 513), JointToTensor()]),
+        'none_val': transforms.Compose([JointResize(513, 513), JointToTensor()]),
     }
     return transformations[transform_type]
 
