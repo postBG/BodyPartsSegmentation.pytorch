@@ -6,7 +6,7 @@ from torch.utils.data import Dataset
 from torchvision.transforms import ToTensor, Resize
 
 
-class Compose(object):
+class JointCompose(object):
     """
     Compose multiple transforms
     """

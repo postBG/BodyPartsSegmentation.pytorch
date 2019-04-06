@@ -3,7 +3,7 @@ import random
 
 import numpy as np
 
-from datasets import PascalPartsDataSet
+from datasets import PascalPartsDataSet, dataset_factory
 from datasets.utils import JointResize
 
 
@@ -19,4 +19,12 @@ class DataSetTest(unittest.TestCase):
         idx = random.randint(a=0, b=len(train_dataset))
         img, label = train_dataset[idx]
         self.assertTupleEqual((513, 513, 3), np.shape(img))
+        self.assertTupleEqual((513, 513), np.shape(label))
+
+    def test_with_dataset_factory(self):
+        train_dataset = dataset_factory('none')
+        idx = random.randint(a=0, b=len(train_dataset))
+        img, label = train_dataset[idx]
+        self.assertEqual(2867, len(train_dataset))
+        self.assertTupleEqual((3, 513, 513), np.shape(img))
         self.assertTupleEqual((513, 513), np.shape(label))
