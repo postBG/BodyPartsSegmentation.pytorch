@@ -6,8 +6,6 @@ from PIL import Image
 from torch.utils.data import DataLoader
 from torch.utils.data import Dataset
 
-DEFAULT_ROOT = "%s/VOCdevkit/" % expanduser("~")
-
 from datasets.utils import JointToTensor
 
 # TODO: Calculate This
@@ -20,6 +18,8 @@ STATISTICS_SET = {
     'mean': [0.485, 0.456, 0.406],
     'std': [0.229, 0.224, 0.225]
 }
+
+DEFAULT_ROOT = "%s/VOCdevkit/" % expanduser("~")
 
 
 class PascalPartsDataSet(Dataset):

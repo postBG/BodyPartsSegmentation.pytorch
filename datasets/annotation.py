@@ -2,8 +2,9 @@ import numpy as np
 from scipy.io import loadmat
 from skimage.io import imread
 from skimage.measure import regionprops
-from part2ind import get_pimap
 from PIL import Image
+
+from datasets.part2ind import get_pimap
 
 PIMAP = get_pimap()
 
@@ -111,4 +112,3 @@ if __name__ == "__main__":
         img = Image.fromarray(mask).convert("P")
         print(np.shape(img))
         img.save(label_path.replace(".mat", ".png"))
-
