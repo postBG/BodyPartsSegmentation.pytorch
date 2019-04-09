@@ -1,13 +1,11 @@
 import os
 import pprint as pp
 
-import torch
 import torch.nn as nn
 import torch.optim as optim
 from tensorboardX import SummaryWriter
 
 from datasets import dataloaders_factory
-from datasets.pascal_parts import CLASS_WEIGHT, IGNORE_LABEL
 from loggers import MetricGraphPrinter, RecentModelLogger, BestModelLogger
 from misc import create_experiment_export_folder, export_experiments_config_as_json, fix_random_seed_as, set_up_gpu
 from models import model_factory
@@ -36,13 +34,14 @@ def main(args):
         BestModelLogger(model_checkpoint_path, metric_key='mean_iou'),
     ]
 
-    criterion = nn.CrossEntropyLoss(ignore_index=IGNORE_LABEL, weight=torch.Tensor(CLASS_WEIGHT).to(device))
+    # criterion = nn.CrossEntropyLoss(ignore_index=IGNORE_LABEL, weight=torch.Tensor(CLASS_WEIGHT).to(device))
+    criterion = nn.CrossEntropyLoss()
     optimizer = create_optimizer(model, args)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=args.decay_step, gamma=args.gamma)
 
     trainer = Trainer(model, dataloaders, optimizer, criterion, args.epoch, args, num_classes=42,
                       log_period_as_iter=args.log_period_as_iter, train_loggers=train_loggers,
-                      val_loggers=val_loggers, lr_schedulers=scheduler)
+                      val_loggers=val_loggers, lr_scheduler=scheduler, device=device)
     trainer.train()
     writer.close()
 
