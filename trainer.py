@@ -39,7 +39,7 @@ class Trainer(object):
         for epoch in range(self.num_epochs):
             for phase in ['train', 'val']:
                 if phase == 'train':
-                    _, accum_iter = self.train_one_epoch(epoch, self.dataloaders[phase], accum_iter)
+                    accum_iter = self.train_one_epoch(epoch, self.dataloaders[phase], accum_iter)
                 else:
                     self.validate(epoch, self.dataloaders['val'], accum_iter)
 
@@ -62,7 +62,6 @@ class Trainer(object):
             self.optimizer.zero_grad()
 
             # Source CE Loss
-
             logits = self.model(inputs)
             ce_loss = self.criterion(logits, gt_mask)
             ce_loss.backward()

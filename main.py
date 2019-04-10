@@ -34,12 +34,12 @@ def main(args):
         BestModelLogger(model_checkpoint_path, metric_key='mean_iou'),
     ]
 
-    # criterion = nn.CrossEntropyLoss(ignore_index=IGNORE_LABEL, weight=torch.Tensor(CLASS_WEIGHT).to(device))
-    criterion = nn.CrossEntropyLoss()
+    # criterion = nn.CrossEntropyLoss(weight=torch.Tensor(CLASS_WEIGHT).to(device))
+    criterion = nn.CrossEntropyLoss(ignore_index=255)
     optimizer = create_optimizer(model, args)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=args.decay_step, gamma=args.gamma)
 
-    trainer = Trainer(model, dataloaders, optimizer, criterion, args.epoch, args, num_classes=42,
+    trainer = Trainer(model, dataloaders, optimizer, criterion, args.epoch, args, num_classes=25,
                       log_period_as_iter=args.log_period_as_iter, train_loggers=train_loggers,
                       val_loggers=val_loggers, lr_scheduler=scheduler, device=device)
     trainer.train()
