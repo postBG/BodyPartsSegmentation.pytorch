@@ -25,9 +25,9 @@ def colorize_mask(mask):
     return new_mask
 
 
-def create_dataset_for_visualization(val_dataset, indicies=None):
-    indicies = indicies if indicies else np.random.randint(0, len(val_dataset), 5)
-    dataset_for_visualization = Subset(val_dataset, indicies)
+def create_dataset_for_visualization(dataset, indicies=None):
+    indicies = indicies if indicies else np.random.randint(0, len(dataset), 5)
+    dataset_for_visualization = Subset(dataset, indicies)
     return dataset_for_visualization
 
 

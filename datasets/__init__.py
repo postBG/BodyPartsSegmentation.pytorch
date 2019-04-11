@@ -11,7 +11,7 @@ from datasets.pascal_parts import PascalPartsDataSet, STATISTICS_SET
 def get_joint_transform(transform_type):
     transformations = {
         'none': JointCompose([JointResize(513, 513), JointToTensor()]),
-        'none_val': JointCompose([JointResize(513, 513), JointToTensor()]),
+        'val': JointCompose([JointResize(513, 513), JointToTensor()]),
         'random': JointCompose([RandomScaleCrop(513, 513),
                                 RandomRotate(),
                                 RandomGaussianBlur(),

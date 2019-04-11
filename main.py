@@ -6,7 +6,8 @@ import torch.optim as optim
 from tensorboardX import SummaryWriter
 
 from datasets import dataloaders_factory, dataset_factory
-from loggers import MetricGraphPrinter, RecentModelLogger, BestModelLogger
+from datasets.pascal_parts import IGNORE_LABEL
+from loggers import MetricGraphPrinter, RecentModelLogger, BestModelLogger, ImagePrinter
 from misc import create_experiment_export_folder, export_experiments_config_as_json, fix_random_seed_as, set_up_gpu
 from models import model_factory
 from options import args as parsed_args
@@ -21,8 +22,8 @@ def main(args):
     device = args.device
     model_checkpoint_path = os.path.join(export_root, 'models')
 
-    train_dataset = dataset_factory(args.transform_type, is_train=True)
-    val_dataset = dataset_factory(args.transform_type, is_train=False)
+    train_dataset = dataset_factory(args.train_transform_type, is_train=True)
+    val_dataset = dataset_factory(args.val_transform_type, is_train=False)
 
     dataloaders = dataloaders_factory(train_dataset, val_dataset, args.batch_size, args.test)
     model = model_factory(args)
@@ -31,17 +32,18 @@ def main(args):
 
     train_loggers = [
         MetricGraphPrinter(writer, key='ce_loss', graph_name='ce_loss', group_name='Train'),
-        MetricGraphPrinter(writer, key='epoch', graph_name='Epoch', group_name='Train')
+        MetricGraphPrinter(writer, key='epoch', graph_name='Epoch', group_name='Train'),
     ]
     val_loggers = [
         MetricGraphPrinter(writer, key='mean_iou', graph_name='mIOU', group_name='Validation'),
         MetricGraphPrinter(writer, key='acc', graph_name='Accuracy', group_name='Validation'),
         RecentModelLogger(model_checkpoint_path),
         BestModelLogger(model_checkpoint_path, metric_key='mean_iou'),
+        ImagePrinter(writer, train_dataset, log_prefix='train'),
+        ImagePrinter(writer, val_dataset, log_prefix='val')
     ]
 
-    # criterion = nn.CrossEntropyLoss(weight=torch.Tensor(CLASS_WEIGHT).to(device))
-    criterion = nn.CrossEntropyLoss(ignore_index=255)
+    criterion = nn.CrossEntropyLoss(ignore_index=IGNORE_LABEL)
     optimizer = create_optimizer(model, args)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=args.decay_step, gamma=args.gamma)
 

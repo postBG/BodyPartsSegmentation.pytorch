@@ -103,19 +103,18 @@ class ImagePrinter(AbstractBaseLogger):
     Input PIL images directly sampled from dataset classes to gt_images and input_images
     """
 
-    def __init__(self, writer, dataset, indices=None, model_key='model', is_train=True):
+    def __init__(self, writer, dataset, indices=None, model_key='model', log_prefix='train'):
         self.model_key = model_key
         self.writer = writer
-        self.is_train = is_train
         self.dataset_name = type(dataset).__name__
         self.dataset = create_dataset_for_visualization(dataset, indices)
-        self.mode = 'train' if is_train else 'val'
+        self.log_prefix = log_prefix
         self.to_tensor = ToTensor()
 
         for i, (img, mask) in enumerate(self.dataset):
-            self.writer.add_image('{}/{}/Input Image'.format(self.dataset_name, i),
+            self.writer.add_image('{}_{}/{}/Input Image'.format(self.log_prefix, self.dataset_name, i),
                                   self.to_tensor(tensor_to_PIL(img, **STATISTICS_SET)), 0)
-            self.writer.add_image('{}/{}/GT Mask'.format(self.dataset_name, i),
+            self.writer.add_image('{}_{}/{}/GT Mask'.format(self.log_prefix, self.dataset_name, i),
                                   self.to_tensor(colorize_mask(mask).convert('RGB')), 0)
 
     def log(self, *args, **kwargs):
@@ -123,7 +122,7 @@ class ImagePrinter(AbstractBaseLogger):
 
         for i, (img, _) in enumerate(self.dataset):
             prediction = self.evaluate(img, model)
-            self.writer.add_image('images_{}/{}/Prediction'.format(self.mode, i),
+            self.writer.add_image('{}/{}/Prediction'.format(self.log_prefix, i),
                                   self.to_tensor(colorize_mask(np.squeeze(prediction, 0)).convert('RGB')),
                                   kwargs['accum_iter'])
 
