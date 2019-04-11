@@ -96,7 +96,7 @@ class RandomGaussianBlur(object):
 
 
 class RandomRotate(object):
-    def __init__(self, degree):
+    def __init__(self, degree=180):
         self.degree = degree
 
     def __call__(self, img, mask):
