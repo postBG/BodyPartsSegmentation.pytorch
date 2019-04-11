@@ -5,7 +5,7 @@ import torch.nn as nn
 import torch.optim as optim
 from tensorboardX import SummaryWriter
 
-from datasets import dataloaders_factory
+from datasets import dataloaders_factory, dataset_factory
 from loggers import MetricGraphPrinter, RecentModelLogger, BestModelLogger
 from misc import create_experiment_export_folder, export_experiments_config_as_json, fix_random_seed_as, set_up_gpu
 from models import model_factory
@@ -21,7 +21,10 @@ def main(args):
     device = args.device
     model_checkpoint_path = os.path.join(export_root, 'models')
 
-    dataloaders = dataloaders_factory(args)
+    train_dataset = dataset_factory(args.transform_type, is_train=True)
+    val_dataset = dataset_factory(args.transform_type, is_train=False)
+
+    dataloaders = dataloaders_factory(train_dataset, val_dataset, args.batch_size, args.test)
     model = model_factory(args)
 
     writer = SummaryWriter(os.path.join(export_root, 'logs'))

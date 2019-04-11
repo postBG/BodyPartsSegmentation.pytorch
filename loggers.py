@@ -5,7 +5,8 @@ import numpy as np
 import torch
 from torchvision.transforms import ToTensor
 
-from utils import colorize_mask
+from datasets import STATISTICS_SET
+from utils import colorize_mask, create_dataset_for_visualization, tensor_to_PIL
 
 
 def save_state_dict(state_dict, path, filename):
@@ -102,26 +103,25 @@ class ImagePrinter(AbstractBaseLogger):
     Input PIL images directly sampled from dataset classes to gt_images and input_images
     """
 
-    def __init__(self, writer, gt_images, input_images, model_key='model', is_train=True):
+    def __init__(self, writer, dataset, indices=None, model_key='model', is_train=True):
         self.model_key = model_key
         self.writer = writer
         self.is_train = is_train
-        self.gt_images = gt_images
-        self.input_images = input_images
+        self.dataset_name = type(dataset).__name__
+        self.dataset = create_dataset_for_visualization(dataset, indices)
         self.mode = 'train' if is_train else 'val'
         self.to_tensor = ToTensor()
 
-        for i, img in enumerate(self.input_images):
-            self.writer.add_image('images_{}/{}/Input Image'.format(self.mode, i), img, 0)
-
-        for i, img in enumerate(self.gt_images):
-            self.writer.add_image('images_{}/{}/GT Mask'.format(self.mode, i),
-                                  self.to_tensor(colorize_mask(img).convert('RGB')), 0)
+        for i, (img, mask) in enumerate(self.dataset):
+            self.writer.add_image('{}/{}/Input Image'.format(self.dataset_name, i),
+                                  self.to_tensor(tensor_to_PIL(img, **STATISTICS_SET)), 0)
+            self.writer.add_image('{}/{}/GT Mask'.format(self.dataset_name, i),
+                                  self.to_tensor(colorize_mask(mask).convert('RGB')), 0)
 
     def log(self, *args, **kwargs):
         model = kwargs[self.model_key]
 
-        for i, img in enumerate(self.input_images):
+        for i, (img, _) in enumerate(self.dataset):
             prediction = self.evaluate(img, model)
             self.writer.add_image('images_{}/{}/Prediction'.format(self.mode, i),
                                   self.to_tensor(colorize_mask(np.squeeze(prediction, 0)).convert('RGB')),
