@@ -3,7 +3,8 @@ import numpy as np
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader, Subset
 
-from datasets.utils import JointToTensor, RandomHorizontalFlip, RandomCrop, JointResize, JointCompose
+from datasets.utils import JointToTensor, RandomHorizontalFlip, RandomCrop, JointResize, JointCompose, RandomScaleCrop, \
+    RandomGaussianBlur, RandomRotate
 from datasets.pascal_parts import PascalPartsDataSet, STATISTICS_SET
 
 
@@ -11,7 +12,13 @@ def get_joint_transform(transform_type):
     transformations = {
         'none': JointCompose([JointResize(513, 513), JointToTensor()]),
         'none_val': JointCompose([JointResize(513, 513), JointToTensor()]),
+        'random': JointCompose([RandomScaleCrop(513, 513),
+                                RandomRotate(),
+                                RandomGaussianBlur(),
+                                RandomHorizontalFlip(),
+                                JointToTensor()])
     }
+
     return transformations[transform_type]
 
 
