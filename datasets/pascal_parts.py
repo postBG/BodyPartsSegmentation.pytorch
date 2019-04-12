@@ -7,8 +7,7 @@ from torch.utils.data import Dataset
 # TODO: Calculate This
 CLASS_WEIGHT = []
 
-# TODO: Find out this
-IGNORE_LABEL = None
+IGNORE_LABEL = 255
 
 STATISTICS_SET = {
     'mean': [0.485, 0.456, 0.406],

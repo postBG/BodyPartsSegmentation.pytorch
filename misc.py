@@ -16,7 +16,8 @@ def _get_experiment_index(experiment_path):
 
 
 def create_experiment_export_folder(args):
-    experiment_dir, experiment_description = args.experiment_dir, args.experiment_description
+    experiment_dir = 'test_' + args.experiment_dir if args.test else args.experiment_dir
+    experiment_description = args.experiment_description
     if not os.path.exists(experiment_dir):
         os.mkdir(experiment_dir)
     experiment_path = get_name_of_experiment_path(experiment_dir, experiment_description)

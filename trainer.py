@@ -119,11 +119,13 @@ class Trainer(object):
             print("Acc: {:.3f}, mIOU: {:.3f}".format(acc, mean_iou))
 
             log_data = {
-                'state_dict': (self._create_state_dict()),
+                'state_dict': self._create_state_dict(),
                 'epoch': epoch,
                 'accum_iter': accum_iter,
                 'acc': acc,
                 'mean_iou': mean_iou,
+                'model': self.model
+
             }
             self.logger_service.log_val(log_data)
 

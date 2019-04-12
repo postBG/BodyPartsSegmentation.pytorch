@@ -22,7 +22,7 @@ parser.add_argument('--backbone', type=str, default='xception', help='Model: res
 parser.add_argument('--seg_model', type=str, default='deeplab_v3', help='Seg Model (default: deeplab_v3)')
 parser.add_argument('--random_seed', type=int, default=0, help='Random seed value')
 parser.add_argument('--train_transform_type', type=str, default='none', help='Train data set transform type')
-parser.add_argument('--val_transform_type', type=str, default='none', help='Val data set transform type')
+parser.add_argument('--val_transform_type', type=str, default='val', help='Val data set transform type')
 
 #########################
 # Experiment Logging Settings
