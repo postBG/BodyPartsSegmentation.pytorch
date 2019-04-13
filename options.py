@@ -5,6 +5,12 @@ from templates import set_template
 parser = argparse.ArgumentParser(description='Body Parts Segmentation')
 
 #########################
+# Utils
+#########################
+parser.add_argument('--template', type=str, default='default', help='template name')
+parser.add_argument('--random_seed', type=int, default=0, help='Random seed value')
+
+#########################
 # General Train Settings
 #########################
 parser.add_argument('--lr', type=float, default=0.001, help='learning rate (default: 0.001)')
@@ -22,7 +28,6 @@ parser.add_argument('--batch_size', type=int, default=4, help='Batch Size')
 parser.add_argument('--optimizer', type=str, default='SGD', choices=['SGD', 'Adam'], help='Optimizer')
 parser.add_argument('--backbone', type=str, default='xception', help='Model: resnet50 | resnet101 | resnet152')
 parser.add_argument('--seg_model', type=str, default='deeplab_v3', help='Seg Model (default: deeplab_v3)')
-parser.add_argument('--random_seed', type=int, default=0, help='Random seed value')
 parser.add_argument('--train_transform_type', type=str, default='none', help='Train data set transform type')
 parser.add_argument('--val_transform_type', type=str, default='val', help='Val data set transform type')
 
