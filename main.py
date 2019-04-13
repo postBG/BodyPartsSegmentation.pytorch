@@ -1,13 +1,12 @@
 import os
 import pprint as pp
 
-import torch.nn as nn
 import torch.optim as optim
 from tensorboardX import SummaryWriter
 
 from datasets import dataloaders_factory, dataset_factory
-from datasets.pascal_parts import IGNORE_LABEL
 from loggers import MetricGraphPrinter, RecentModelLogger, BestModelLogger, ImagePrinter
+from losses import create_criterion
 from misc import create_experiment_export_folder, export_experiments_config_as_json, fix_random_seed_as, set_up_gpu
 from models import model_factory
 from options import args as parsed_args
@@ -40,7 +39,7 @@ def main(args):
         ImagePrinter(writer, val_dataset, log_prefix='val')
     ]
 
-    criterion = nn.CrossEntropyLoss(ignore_index=IGNORE_LABEL)
+    criterion = create_criterion(args)
     optimizer = create_optimizer(model, args)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=args.decay_step, gamma=args.gamma)
 

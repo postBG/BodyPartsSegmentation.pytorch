@@ -1,6 +1,7 @@
 import argparse
 
 from templates import set_template
+from datasets.pascal_parts import CLASS_WEIGHT
 
 parser = argparse.ArgumentParser(description='Body Parts Segmentation')
 
@@ -30,6 +31,8 @@ parser.add_argument('--backbone', type=str, default='xception', help='Model: res
 parser.add_argument('--seg_model', type=str, default='deeplab_v3', help='Seg Model (default: deeplab_v3)')
 parser.add_argument('--train_transform_type', type=str, default='none', help='Train data set transform type')
 parser.add_argument('--val_transform_type', type=str, default='val', help='Val data set transform type')
+parser.add_argument('--class_weight', type=str, default='none', choices=list(CLASS_WEIGHT.keys()), help='class_weight')
+parser.add_argument('--criterion', type=str, default='ce', help='select criterion')
 
 #########################
 # Experiment Logging Settings
