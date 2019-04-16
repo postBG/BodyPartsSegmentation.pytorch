@@ -35,13 +35,13 @@ def dice_loss(true, logits, eps=1e-7):
         neg_prob = 1 - pos_prob
         probas = torch.cat([pos_prob, neg_prob], dim=1)
     else:
-        true_1_hot = torch.eye(num_classes)[true.squeeze(1)]
+        true_1_hot = torch.eye(256)[true.squeeze(1)]
         true_1_hot = true_1_hot.permute(0, 3, 1, 2).float()
         probas = F.softmax(logits, dim=1)
     true_1_hot = true_1_hot.type(logits.type())
     dims = (0,) + tuple(range(2, true.ndimension()))
-    intersection = torch.sum(probas * true_1_hot, dims)
-    cardinality = torch.sum(probas + true_1_hot, dims)
+    intersection = torch.sum(probas * true_1_hot[:, :25, :, :], dims)
+    cardinality = torch.sum(probas + true_1_hot[:, :25, :, :], dims)
     dice_loss = (2. * intersection / (cardinality + eps)).mean()
     return (1 - dice_loss)
 
