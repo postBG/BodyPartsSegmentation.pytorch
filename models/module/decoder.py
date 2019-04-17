@@ -7,13 +7,24 @@ import torch.nn.functional as F
 class Decoder(nn.Module):
     def __init__(self, num_classes, BatchNorm=None):
         super(Decoder, self).__init__()
+        inplanes = 128
+        mid_filters = 48
         filters = 256
-
-        self.low_conv = nn.Conv2d(128, filters, 1, 1, 0, 1, 1, bias=False)
-        self.low_bn = BatchNorm(filters)
+        self.low_conv = nn.Conv2d(inplanes, mid_filters, 1, 1, 0, 1, 1, bias=False)
+        self.low_bn = BatchNorm(mid_filters)
         self.relu = nn.ReLU()
 
-        self.refine_conv = nn.Conv2d(2 * filters, num_classes, kernel_size=3, bias=False)
+        self.refine_conv = nn.Sequential(
+            nn.Conv2d(mid_filters + filters, filters, kernel_size=3, bias=False),
+            BatchNorm(filters),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Conv2d(filters, filters, kernel_size=3, bias=False),
+            BatchNorm(filters),
+            nn.ReLU(),
+            nn.Dropout(0.1),
+            nn.Conv2d(filters, num_classes, kernel_size=1, stride=1)
+        )
 
         self._init_weight()
 
@@ -30,9 +41,8 @@ class Decoder(nn.Module):
 
     def _init_weight(self):
         for m in self.modules():
-            if isinstance(m, nn.Conv2d):  # xavier initialization
-                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-                m.weight.data.normal_(0, math.sqrt(2. / n))
+            if isinstance(m, nn.Conv2d):
+                torch.nn.init.kaiming_normal_(m.weight)
             elif isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()

@@ -34,9 +34,8 @@ class AtrousLayer(nn.Module):
 
     def _init_weight(self):
         for m in self.modules():
-            if isinstance(m, nn.Conv2d):  # xavier initialization
-                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-                m.weight.data.normal_(0, math.sqrt(2. / n))
+            if isinstance(m, nn.Conv2d):
+                torch.nn.init.kaiming_normal_(m.weight)
             elif isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
@@ -65,9 +64,8 @@ class SpecialPooling(nn.Module):
 
     def _init_weight(self):
         for m in self.modules():
-            if isinstance(m, nn.Conv2d):  # xavier initialization
-                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-                m.weight.data.normal_(0, math.sqrt(2. / n))
+            if isinstance(m, nn.Conv2d):
+                torch.nn.init.kaiming_normal_(m.weight)
             elif isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
@@ -93,6 +91,7 @@ class ASPP(nn.Module):
         self.last_conv = nn.Conv2d(5 * filters, filters, kernel_size=1, stride=1, padding=0, dilation=1)
         self.bn = BatchNorm(filters)
         self.relu = nn.ReLU()
+        self.dropout = nn.Dropout(0.5)
 
         self._init_weight()
 
@@ -107,14 +106,14 @@ class ASPP(nn.Module):
         output = self.last_conv(output)
         output = self.bn(output)
         output = self.relu(output)
+        output = self.dropout(output)
 
         return output
 
     def _init_weight(self):
         for m in self.modules():
-            if isinstance(m, nn.Conv2d):  # xavier initialization
-                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-                m.weight.data.normal_(0, math.sqrt(2. / n))
+            if isinstance(m, nn.Conv2d):
+                torch.nn.init.kaiming_normal_(m.weight)
             elif isinstance(m, nn.BatchNorm2d):
                 m.weight.data.fill_(1)
                 m.bias.data.zero_()
