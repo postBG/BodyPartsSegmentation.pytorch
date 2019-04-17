@@ -35,7 +35,8 @@ class Trainer(object):
 
     def train(self):
         accum_iter = 0
-        self.validate(0, self.dataloaders['val'], accum_iter)
+        #debug
+        #self.validate(0, self.dataloaders['val'], accum_iter)
         for epoch in range(self.num_epochs):
             for phase in ['train', 'val']:
                 if phase == 'train':
@@ -59,18 +60,32 @@ class Trainer(object):
             batch_size = inputs.size(0)
             inputs, gt_mask = inputs.to(self.device), gt_mask.type(torch.LongTensor).to(self.device)
 
+            # debug
+            import os.path as osp
+            import time
+            from torchvision.transforms import ToTensor
+            from utils import colorize_mask
+            from torchvision.utils import save_image
+            mask = gt_mask[0].detach().cpu().numpy()
+            mask = ToTensor()(colorize_mask(mask).convert('RGB'))
+            temp_dir = './temp'
+            prefix = str(time.time())[-4:]
+            save_image(inputs[0], osp.join(temp_dir, f'{prefix}_input_{batch_idx}.png'))
+            save_image(mask, osp.join(temp_dir, f'{prefix}_gt_{batch_idx}.png'))
+
+
             self.optimizer.zero_grad()
 
             # Source CE Loss
             logits = self.model(inputs)
-            ce_loss = self.criterion(logits, gt_mask)
-            ce_loss.backward()
+            loss = self.criterion(logits, gt_mask)
+            loss.backward()
 
             self.optimizer.step()
 
-            average_meter_set.update('ce_loss', ce_loss.item())
+            average_meter_set.update('loss', loss.item())
             tqdm_dataloader.set_description(
-                "Epoch {}, ce_loss {:.3f}, ".format(epoch + 1, average_meter_set['ce_loss'].avg))
+                "Epoch {}, loss {:.8f}, ".format(epoch + 1, average_meter_set['loss'].avg))
 
             accum_iter += batch_size
 

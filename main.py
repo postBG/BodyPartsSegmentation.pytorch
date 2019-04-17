@@ -27,7 +27,7 @@ def main(args):
     writer = SummaryWriter(os.path.join(export_root, 'logs'))
 
     train_loggers = [
-        MetricGraphPrinter(writer, key='ce_loss', graph_name='ce_loss', group_name='Train'),
+        MetricGraphPrinter(writer, key='loss', graph_name='loss', group_name='Train'),
         MetricGraphPrinter(writer, key='epoch', graph_name='Epoch', group_name='Train'),
     ]
     val_loggers = [
