@@ -4,9 +4,13 @@ from os.path import expanduser
 from PIL import Image
 from torch.utils.data import Dataset
 
-# TODO: Calculate This
-CLASS_WEIGHT = []
-
+CLASS_WEIGHT = {
+    'none': [1.] * 25,
+    'naive': [1.3, 33.04, 2639.53, 2965.59, 1654.45, 1754.02, 4482.05, 4276.17, 532.41, 884.94, 41.84, 13.46,
+              207.41, 144.33, 71.36, 235.35, 134.06, 69.87, 205.03, 180.2, 85.01, 581.61, 189.39, 82.6, 568.89],
+    'proximal_log': [1.0, 5.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 8.0, 10.0, 5.0, 2.0, 5.0, 5.0, 5.0, 5.0, 5.0,
+                     5.0, 5.0, 5.0, 5.0, 8.0, 5.0, 5.0, 8.0]
+}
 IGNORE_LABEL = 255
 
 STATISTICS_SET = {

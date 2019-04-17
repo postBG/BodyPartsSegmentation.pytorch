@@ -28,8 +28,67 @@ class RandomHorizontalFlip(object):
     """
 
     def __call__(self, img, mask):
+        print("ADFD")
+
         if random.random() < 0.5:
-            return img.transpose(Image.FLIP_LEFT_RIGHT), mask.transpose(Image.FLIP_LEFT_RIGHT)
+            flipped_img, flipped_mask = np.array(img.transpose(Image.FLIP_LEFT_RIGHT)), \
+                                        np.array(mask.transpose(Image.FLIP_LEFT_RIGHT))
+
+            # eye
+            left = flipped_mask == 2
+            right = flipped_mask == 3
+            flipped_mask[left] = 3
+            flipped_mask[right] = 2
+
+            # ear
+            left = flipped_mask == 4
+            right = flipped_mask == 5
+            flipped_mask[left] = 5
+            flipped_mask[right] = 4
+
+            # eyebrow
+            left = flipped_mask == 6
+            right = flipped_mask == 7
+            flipped_mask[left] = 7
+            flipped_mask[right] = 6
+
+            # lower arm
+            left = flipped_mask == 13
+            right = flipped_mask == 16
+            flipped_mask[left] = 16
+            flipped_mask[right] = 13
+
+            # upper arm
+            left = flipped_mask == 14
+            right = flipped_mask == 17
+            flipped_mask[left] = 17
+            flipped_mask[right] = 14
+
+            # hand
+            left = flipped_mask == 15
+            right = flipped_mask == 18
+            flipped_mask[left] = 18
+            flipped_mask[right] = 15
+
+            # lower leg
+            left = flipped_mask == 19
+            right = flipped_mask == 22
+            flipped_mask[left] = 22
+            flipped_mask[right] = 19
+
+            # upper leg
+            left = flipped_mask == 20
+            right = flipped_mask == 23
+            flipped_mask[left] = 23
+            flipped_mask[right] = 20
+
+            # foot
+            left = flipped_mask == 21
+            right = flipped_mask == 24
+            flipped_mask[left] = 24
+            flipped_mask[right] = 21
+
+            img, mask = Image.fromarray(flipped_img), Image.fromarray(flipped_mask)
         return img, mask
 
 
