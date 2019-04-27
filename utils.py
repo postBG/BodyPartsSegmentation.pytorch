@@ -1,10 +1,14 @@
-import random
+import os.path as osp
+import time
+
 import numpy as np
-import matplotlib.pyplot as plt
 from PIL import Image
 from torch.utils.data import Subset
 from torchvision.transforms import Normalize, ToPILImage
+from torchvision.transforms import ToTensor
+from torchvision.utils import save_image
 
+to_tensor = ToTensor()
 
 # def color_map(N=256):
 #     def bitget(byteval, idx):
@@ -29,9 +33,11 @@ from torchvision.transforms import Normalize, ToPILImage
 # palette.extend(color_map(24))
 # palette.extend([0, 0, 0])
 
-palette = [0,0,0, 255,0,0, 0,255,0, 0,0,255, 255,255,0, 0,255,255, 255,0,255, 192,192,192, 128,128,128,
-           128,0,0, 128,128,0, 0,128,0, 128,0,128, 0,128,128, 0,0,128, 255,69,0, 255,215,0, 0,100,0,
-           175,238,238, 30,144,255, 255,20,147, 210,105,30, 245,255,250, 188,143,143, 0,0,0]
+palette = [0, 0, 0, 255, 0, 0, 0, 255, 0, 0, 0, 255, 255, 255, 0, 0, 255, 255, 255, 0, 255, 192, 192, 192, 128, 128,
+           128,
+           128, 0, 0, 128, 128, 0, 0, 128, 0, 128, 0, 128, 0, 128, 128, 0, 0, 128, 255, 69, 0, 255, 215, 0, 0, 100, 0,
+           175, 238, 238, 30, 144, 255, 255, 20, 147, 210, 105, 30, 245, 255, 250, 188, 143, 143, 0, 0, 0]
+
 
 def colorize_mask(mask):
     """
@@ -71,3 +77,13 @@ def tensor_to_PIL(img, mean, std, clamp=True):
     if clamp:
         unnormalized_img = unnormalized_img.clamp(0, 1)
     return ToPILImage()(unnormalized_img)
+
+
+def save_images_for_debugging(batch_idx, gt_mask, inputs):
+    # debug
+    mask = gt_mask[0].detach().cpu().numpy()
+    mask = to_tensor(colorize_mask(mask).convert('RGB'))
+    temp_dir = './temp'
+    prefix = str(time.time())[-4:]
+    save_image(inputs[0], osp.join(temp_dir, f'{prefix}_input_{batch_idx}.png'))
+    save_image(mask, osp.join(temp_dir, f'{prefix}_gt_{batch_idx}.png'))
