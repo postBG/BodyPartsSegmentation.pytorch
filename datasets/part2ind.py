@@ -183,31 +183,31 @@ def get_pimap():
     # [person]
     pimap[15] = {}
     pimap[15]['head'] = 1
-    pimap[15]['leye'] = 2  # left eye
-    pimap[15]['reye'] = 3  # right eye
-    pimap[15]['lear'] = 4  # left ear
-    pimap[15]['rear'] = 5  # right ear
-    pimap[15]['lebrow'] = 6  # left eyebrow
-    pimap[15]['rebrow'] = 7  # right eyebrow
-    pimap[15]['nose'] = 8
-    pimap[15]['mouth'] = 9
-    pimap[15]['hair'] = 10
+    pimap[15]['leye'] = 1  # left eye
+    pimap[15]['reye'] = 1  # right eye
+    pimap[15]['lear'] = 1  # left ear
+    pimap[15]['rear'] = 1  # right ear
+    pimap[15]['lebrow'] = 1  # left eyebrow
+    pimap[15]['rebrow'] = 1  # right eyebrow
+    pimap[15]['nose'] = 1
+    pimap[15]['mouth'] = 1
+    pimap[15]['hair'] = 1
 
-    pimap[15]['torso'] = 11
-    pimap[15]['neck'] = 12
-    pimap[15]['llarm'] = 13  # left lower arm
-    pimap[15]['luarm'] = 14  # left upper arm
-    pimap[15]['lhand'] = 15  # left hand
-    pimap[15]['rlarm'] = 16  # right lower arm
-    pimap[15]['ruarm'] = 17  # right upper arm
-    pimap[15]['rhand'] = 18  # right hand
+    pimap[15]['torso'] = 6
+    pimap[15]['neck'] = 6
+    pimap[15]['llarm'] = 2  # left lower arm
+    pimap[15]['luarm'] = 2  # left upper arm
+    pimap[15]['lhand'] = 2  # left hand
+    pimap[15]['rlarm'] = 3  # right lower arm
+    pimap[15]['ruarm'] = 3  # right upper arm
+    pimap[15]['rhand'] = 3  # right hand
 
-    pimap[15]['llleg'] = 19  # left lower leg
-    pimap[15]['luleg'] = 20  # left upper leg
-    pimap[15]['lfoot'] = 21  # left foot
-    pimap[15]['rlleg'] = 22  # right lower leg
-    pimap[15]['ruleg'] = 23  # right upper leg
-    pimap[15]['rfoot'] = 24  # right foot
+    pimap[15]['llleg'] = 4  # left lower leg
+    pimap[15]['luleg'] = 4  # left upper leg
+    pimap[15]['lfoot'] = 4  # left foot
+    pimap[15]['rlleg'] = 5  # right lower leg
+    pimap[15]['ruleg'] = 5  # right upper leg
+    pimap[15]['rfoot'] = 5  # right foot
 
     # [pottedplant]
     pimap[16] = {}

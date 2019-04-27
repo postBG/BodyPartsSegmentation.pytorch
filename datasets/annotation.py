@@ -3,7 +3,7 @@ from scipy.io import loadmat
 from skimage.io import imread
 from skimage.measure import regionprops
 
-from datasets.part2ind import get_pimap
+from part2ind import get_pimap
 
 PIMAP = get_pimap()
 
@@ -24,6 +24,8 @@ class ImageAnnotation(object):
         self.n_objects = data['objects'].shape[1]
         self.objects = []
         for obj in data['objects'][0, :]:
+            if obj['class_ind'][0, 0] != 15:
+                continue
             self.objects.append(PascalObject(obj))
 
         # create masks for objects and parts
@@ -86,3 +88,31 @@ class PascalPart(PascalBase):
     def __init__(self, obj):
         super(PascalPart, self).__init__(obj)
         self.part_name = obj['part_name'][0]
+
+
+from os.path import expanduser
+import os
+from PIL import Image
+
+DEFAULT_ROOT = "%s/VOCdevkit/" % expanduser("~")
+
+if __name__ == "__main__":
+    images_dir = os.path.join(DEFAULT_ROOT, "VOC2010/JPEGImages/")
+    labels_dir = os.path.join(DEFAULT_ROOT, "Annotations_Part")
+    save_dir = os.path.join(DEFAULT_ROOT, "Merged_Annotations_Part")
+
+    image_list = []
+
+    with open("%s/trainval.txt" % DEFAULT_ROOT, "r") as f:
+        for image in f:
+            image_list.append(image.replace("\n", ""))
+
+    for image in image_list:
+        im_path = os.path.join(images_dir, image + ".jpg")
+        label_path = os.path.join(labels_dir, image + ".mat")
+        save_path = os.path.join(save_dir, image + ".png")
+
+        mask = ImageAnnotation(im_path, label_path).part_mask
+        img = Image.fromarray(mask).convert("P")
+        print(np.shape(img))
+        img.save(save_path)

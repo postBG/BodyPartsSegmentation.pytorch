@@ -2,10 +2,11 @@ def set_template(args):
     print("Template setting: {}".format(args.template))
 
     if args.template == 'proximal_log_ce':
-        args.test = True
+        args.resume_training = 'with_proximal_log_weighted_ce_2019-04-25_2'
+        args.test = False
         args.batch_size = 4
-        args.lr = 0.0005
-        args.epoch = 10
+        args.lr = 0.001
+        args.epoch = 120
         args.optimizer = 'SGD'
         args.momentum = 0.9
         args.decay_step = 5

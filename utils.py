@@ -5,10 +5,33 @@ from PIL import Image
 from torch.utils.data import Subset
 from torchvision.transforms import Normalize, ToPILImage
 
+
+# def color_map(N=256):
+#     def bitget(byteval, idx):
+#         return ((byteval & (1 << idx)) != 0)
+#
+#     cmap = []
+#     for i in range(N):
+#         r = g = b = 0
+#         c = i
+#         for j in range(8):
+#             r = r | (bitget(c, 0) << 7-j)
+#             g = g | (bitget(c, 1) << 7-j)
+#             b = b | (bitget(c, 2) << 7-j)
+#             c = c >> 3
+#
+#         cmap.extend([r, g, b])
+#
+#     return cmap
+#
+#
+# palette = [0, 0, 0]
+# palette.extend(color_map(24))
+# palette.extend([0, 0, 0])
+
 palette = [0,0,0, 255,0,0, 0,255,0, 0,0,255, 255,255,0, 0,255,255, 255,0,255, 192,192,192, 128,128,128,
            128,0,0, 128,128,0, 0,128,0, 128,0,128, 0,128,128, 0,0,128, 255,69,0, 255,215,0, 0,100,0,
            175,238,238, 30,144,255, 255,20,147, 210,105,30, 245,255,250, 188,143,143, 0,0,0]
-
 
 def colorize_mask(mask):
     """

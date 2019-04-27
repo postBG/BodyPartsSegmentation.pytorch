@@ -61,18 +61,17 @@ class Trainer(object):
             inputs, gt_mask = inputs.to(self.device), gt_mask.type(torch.LongTensor).to(self.device)
 
             # debug
-            import os.path as osp
-            import time
-            from torchvision.transforms import ToTensor
-            from utils import colorize_mask
-            from torchvision.utils import save_image
-            mask = gt_mask[0].detach().cpu().numpy()
-            mask = ToTensor()(colorize_mask(mask).convert('RGB'))
-            temp_dir = './temp'
-            prefix = str(time.time())[-4:]
-            save_image(inputs[0], osp.join(temp_dir, f'{prefix}_input_{batch_idx}.png'))
-            save_image(mask, osp.join(temp_dir, f'{prefix}_gt_{batch_idx}.png'))
-
+            # import os.path as osp
+            # import time
+            # from torchvision.transforms import ToTensor
+            # from utils import colorize_mask
+            # from torchvision.utils import save_image
+            # mask = gt_mask[0].detach().cpu().numpy()
+            # mask = ToTensor()(colorize_mask(mask).convert('RGB'))
+            # temp_dir = './temp'
+            # prefix = str(time.time())[-4:]
+            # save_image(inputs[0], osp.join(temp_dir, f'{prefix}_input_{batch_idx}.png'))
+            # save_image(mask, osp.join(temp_dir, f'{prefix}_gt_{batch_idx}.png'))
 
             self.optimizer.zero_grad()
 

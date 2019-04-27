@@ -28,8 +28,6 @@ class RandomHorizontalFlip(object):
     """
 
     def __call__(self, img, mask):
-        print("ADFD")
-
         if random.random() < 0.5:
             flipped_img, flipped_mask = np.array(img.transpose(Image.FLIP_LEFT_RIGHT)), \
                                         np.array(mask.transpose(Image.FLIP_LEFT_RIGHT))
