@@ -43,6 +43,18 @@ def main(args):
     optimizer = create_optimizer(model, args)
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=args.decay_step, gamma=args.gamma)
 
+    if args.resume_training:
+        import torch
+        exp_dir = os.path.join(args.experiment_dir, args.resume_training)
+        model_dir = 'models/checkpoint-recent.pth'
+        chk = torch.load(os.path.join(exp_dir, model_dir))
+        model.load_state_dict(chk['model_state_dict'])
+        optimizer.load_state_dict(chk['optimizer_state_dict'])
+        for state in optimizer.state.values():
+            for k, v in state.items():
+                if isinstance(v, torch.Tensor):
+                    state[k] = v.to(device)
+
     trainer = Trainer(model, dataloaders, optimizer, criterion, args.epoch, args, num_classes=25,
                       log_period_as_iter=args.log_period_as_iter, train_loggers=train_loggers,
                       val_loggers=val_loggers, lr_scheduler=scheduler, device=device)
