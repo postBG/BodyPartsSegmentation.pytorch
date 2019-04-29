@@ -1,6 +1,6 @@
 # BodyPartsSegmentation.pytorch
 
-This repository contains codes for train [VOC-2010 Parts dataset](http://www.stat.ucla.edu/~xianjie.chen/pascal_part_dataset/pascal_part.html).
+This repository contains codes to train [VOC-2010 Parts dataset](http://www.stat.ucla.edu/~xianjie.chen/pascal_part_dataset/pascal_part.html).
 
 ## Dependencies
 To set up your python environment to run the code in this repository, follow the instructions below.
