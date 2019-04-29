@@ -6,6 +6,7 @@ from tqdm import tqdm
 from metrics import eval_seg_metrics
 from loggers import LoggerService
 from misc import AverageMeterSet
+from utils import save_images_for_debugging
 
 
 class Trainer(object):
@@ -30,13 +31,14 @@ class Trainer(object):
 
         self.log_period_as_iter = log_period_as_iter
         self.validation_period_as_iter = args.validation_period_as_iter
+        self.debug = args.debug
 
         self.num_classes = num_classes
 
     def train(self):
         accum_iter = 0
-        #debug
-        #self.validate(0, self.dataloaders['val'], accum_iter)
+        # debug
+        # self.validate(0, self.dataloaders['val'], accum_iter)
         for epoch in range(self.num_epochs):
             for phase in ['train', 'val']:
                 if phase == 'train':
@@ -60,18 +62,8 @@ class Trainer(object):
             batch_size = inputs.size(0)
             inputs, gt_mask = inputs.to(self.device), gt_mask.type(torch.LongTensor).to(self.device)
 
-            # debug
-            # import os.path as osp
-            # import time
-            # from torchvision.transforms import ToTensor
-            # from utils import colorize_mask
-            # from torchvision.utils import save_image
-            # mask = gt_mask[0].detach().cpu().numpy()
-            # mask = ToTensor()(colorize_mask(mask).convert('RGB'))
-            # temp_dir = './temp'
-            # prefix = str(time.time())[-4:]
-            # save_image(inputs[0], osp.join(temp_dir, f'{prefix}_input_{batch_idx}.png'))
-            # save_image(mask, osp.join(temp_dir, f'{prefix}_gt_{batch_idx}.png'))
+            if self.debug:
+                save_images_for_debugging(batch_idx, gt_mask, inputs)
 
             self.optimizer.zero_grad()
 
