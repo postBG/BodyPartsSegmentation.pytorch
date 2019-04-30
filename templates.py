@@ -17,6 +17,22 @@ def set_template(args):
         args.criterion = 'ce'
         args.class_weight = 'proximal_log'
 
+    elif args.template == 'resnet101_backbone':
+        args.backbone = 'resnet'
+        args.test = False
+        args.batch_size = 4
+        args.lr = 0.001
+        args.epoch = 120
+        args.optimizer = 'SGD'
+        args.momentum = 0.9
+        args.decay_step = 5
+        args.gamma = 0.1
+        args.weight_decay = 2e-5
+        args.transform_type = 'none'
+        args.experiment_description = 'with_proximal_log_weighted_ce'
+        args.criterion = 'ce'
+        args.class_weight = 'proximal_log'
+
     elif args.template == 'with_fcn_res50':
         args.test = False
         args.batch_size = 4
