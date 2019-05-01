@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 from models.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
 
+
 class Bottleneck(nn.Module):
     expansion = 4
 
@@ -42,6 +43,7 @@ class Bottleneck(nn.Module):
 
         return out
 
+
 class ResNet(nn.Module):
 
     def __init__(self, block, layers, output_stride, BatchNorm, pretrained=True):
@@ -59,15 +61,19 @@ class ResNet(nn.Module):
 
         # Modules
         self.conv1 = nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3,
-                                bias=False)
+                               bias=False)
         self.bn1 = BatchNorm(64)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
 
-        self.layer1 = self._make_layer(block, 64, layers[0], stride=strides[0], dilation=dilations[0], BatchNorm=BatchNorm)
-        self.layer2 = self._make_layer(block, 128, layers[1], stride=strides[1], dilation=dilations[1], BatchNorm=BatchNorm)
-        self.layer3 = self._make_layer(block, 256, layers[2], stride=strides[2], dilation=dilations[2], BatchNorm=BatchNorm)
-        self.layer4 = self._make_MG_unit(block, 512, blocks=blocks, stride=strides[3], dilation=dilations[3], BatchNorm=BatchNorm)
+        self.layer1 = self._make_layer(block, 64, layers[0], stride=strides[0], dilation=dilations[0],
+                                       BatchNorm=BatchNorm)
+        self.layer2 = self._make_layer(block, 128, layers[1], stride=strides[1], dilation=dilations[1],
+                                       BatchNorm=BatchNorm)
+        self.layer3 = self._make_layer(block, 256, layers[2], stride=strides[2], dilation=dilations[2],
+                                       BatchNorm=BatchNorm)
+        self.layer4 = self._make_MG_unit(block, 512, blocks=blocks, stride=strides[3], dilation=dilations[3],
+                                         BatchNorm=BatchNorm)
         # self.layer4 = self._make_layer(block, 512, layers[3], stride=strides[3], dilation=dilations[3], BatchNorm=BatchNorm)
         self._init_weight()
 
@@ -101,12 +107,12 @@ class ResNet(nn.Module):
             )
 
         layers = []
-        layers.append(block(self.inplanes, planes, stride, dilation=blocks[0]*dilation,
+        layers.append(block(self.inplanes, planes, stride, dilation=blocks[0] * dilation,
                             downsample=downsample, BatchNorm=BatchNorm))
         self.inplanes = planes * block.expansion
         for i in range(1, len(blocks)):
             layers.append(block(self.inplanes, planes, stride=1,
-                                dilation=blocks[i]*dilation, BatchNorm=BatchNorm))
+                                dilation=blocks[i] * dilation, BatchNorm=BatchNorm))
 
         return nn.Sequential(*layers)
 
@@ -144,6 +150,7 @@ class ResNet(nn.Module):
                 model_dict[k] = v
         state_dict.update(model_dict)
         self.load_state_dict(state_dict)
+
 
 def ResNet101(output_stride, BatchNorm, pretrained=True):
     """Constructs a ResNet-101 model.

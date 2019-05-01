@@ -1,13 +1,14 @@
-from models.backbone.Xception import AlignedXception
-from models.backbone.Xception2 import get_xception
+from models.backbone.aligned_xception import AlignedXception
+from models.backbone.Xception import xception
 from models.backbone import resnet
 
-def build_backbone(name, output_stride, BatchNorm=None, pretrained=True):
+
+def build_backbone(name, output_stride, batch_norm=None, pretrained=True):
     backbone = None
     if name == 'xception':
-        backbone = get_xception(pretrained=True) #AlignedXception(output_stride, BatchNorm, pretrained=pretrained)
+        backbone = xception(pretrained=pretrained)  # AlignedXception(output_stride, BatchNorm, pretrained=pretrained)
 
     elif name == 'resnet':
-        backbone = resnet.ResNet101(output_stride, BatchNorm)
+        backbone = resnet.ResNet101(output_stride, batch_norm)
 
     return backbone
