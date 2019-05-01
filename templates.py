@@ -12,7 +12,7 @@ def set_template(args):
         args.decay_step = 5
         args.gamma = 0.1
         args.weight_decay = 2e-5
-        args.transform_type = 'none'
+        args.train_transform_type = 'none'
         args.experiment_description = 'with_proximal_log_weighted_ce'
         args.criterion = 'ce'
         args.class_weight = 'proximal_log'
@@ -45,9 +45,8 @@ def set_template(args):
         args.weight_decay = 2e-5
         args.train_transform_type = 'none'
         args.seg_model = 'fcn'
-        args.experiment_description = 'with_fcn_res50'
-        args.criterion = 'ce'
-        args.class_weight = 'proximal_log'
+        args.experiment_description = 'with_fcn_res50_and_dice'
+        args.criterion = 'dice'
 
     elif args.template == 'dice':
         args.test = False
@@ -59,7 +58,7 @@ def set_template(args):
         args.decay_step = 5
         args.gamma = 0.1
         args.weight_decay = 2e-5
-        args.transform_type = 'none'
+        args.train_transform_type = 'none'
         args.experiment_description = 'with_dice_loss'
         args.criterion = 'dice'
 
