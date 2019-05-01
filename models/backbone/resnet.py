@@ -7,15 +7,16 @@ from models.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
 class Bottleneck(nn.Module):
     expansion = 4
 
-    def __init__(self, inplanes, planes, stride=1, dilation=1, downsample=None, BatchNorm=None):
+    def __init__(self, inplanes, planes, stride=1, dilation=1, downsample=None, batch_norm_cls=None):
         super(Bottleneck, self).__init__()
+        batch_norm_cls = batch_norm_cls if batch_norm_cls else nn.BatchNorm2d
         self.conv1 = nn.Conv2d(inplanes, planes, kernel_size=1, bias=False)
-        self.bn1 = BatchNorm(planes)
+        self.bn1 = batch_norm_cls(planes)
         self.conv2 = nn.Conv2d(planes, planes, kernel_size=3, stride=stride,
                                dilation=dilation, padding=dilation, bias=False)
-        self.bn2 = BatchNorm(planes)
+        self.bn2 = batch_norm_cls(planes)
         self.conv3 = nn.Conv2d(planes, planes * 4, kernel_size=1, bias=False)
-        self.bn3 = BatchNorm(planes * 4)
+        self.bn3 = batch_norm_cls(planes * 4)
         self.relu = nn.ReLU(inplace=True)
         self.downsample = downsample
         self.stride = stride
@@ -152,10 +153,12 @@ class ResNet(nn.Module):
         self.load_state_dict(state_dict)
 
 
-def ResNet101(output_stride, BatchNorm, pretrained=True):
+def ResNet101(output_stride, batch_norm_cls, pretrained=True):
     """Constructs a ResNet-101 model.
     Args:
+        output_stride: Pass
+        batch_norm_cls: BatchNorm2D
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = ResNet(Bottleneck, [3, 4, 23, 3], output_stride, BatchNorm, pretrained=pretrained)
+    model = ResNet(Bottleneck, [3, 4, 23, 3], output_stride, batch_norm_cls, pretrained=pretrained)
     return model

@@ -16,30 +16,28 @@ def fixed_padding(inputs, kernel_size, dilation):
 
 # order of pointwise and depth wise doesn't matter + pretrained model follows the original
 class SeparableConv2d(nn.Module):
-    def __init__(self, inplanes, planes, kernel_size=3, stride=1, dilation=1, bias=False, BatchNorm=None):
+    def __init__(self, inplanes, planes, kernel_size=3, stride=1, dilation=1, bias=False):
         super(SeparableConv2d, self).__init__()
-
         self.conv1 = nn.Conv2d(inplanes, inplanes, kernel_size, stride, 0, dilation,
                                groups=inplanes, bias=bias)
-        self.bn = BatchNorm(inplanes)
         self.pointwise = nn.Conv2d(inplanes, planes, 1, 1, 0, 1, 1, bias=bias)
 
     def forward(self, x):
         x = fixed_padding(x, self.conv1.kernel_size[0], dilation=self.conv1.dilation[0])
         x = self.conv1(x)
-        x = self.bn(x)
         x = self.pointwise(x)
         return x
 
 
 class Block(nn.Module):
-    def __init__(self, inplanes, planes, reps, stride=1, dilation=1, BatchNorm=None, start_with_relu=True,
+    def __init__(self, inplanes, planes, reps, stride=1, dilation=1, batch_norm_cls=None, start_with_relu=True,
                  grow_first=True, is_last=False):
         super(Block, self).__init__()
+        batch_norm_cls = batch_norm_cls if batch_norm_cls else nn.BatchNorm2d
 
         if planes != inplanes or stride != 1:
             self.skip = nn.Conv2d(inplanes, planes, 1, stride=stride, bias=False)
-            self.skipbn = BatchNorm(planes)
+            self.skipbn = batch_norm_cls(planes)
         else:
             self.skip = None
 
@@ -49,29 +47,29 @@ class Block(nn.Module):
         filters = inplanes
         if grow_first:  # exit flow has False value.
             rep.append(self.relu)
-            rep.append(SeparableConv2d(inplanes, planes, 3, 1, dilation, BatchNorm=BatchNorm))
-            rep.append(BatchNorm(planes))
+            rep.append(SeparableConv2d(inplanes, planes, 3, 1, dilation))
+            rep.append(batch_norm_cls(planes))
             filters = planes
 
         for i in range(reps - 1):
             rep.append(self.relu)
-            rep.append(SeparableConv2d(filters, filters, 3, 1, dilation, BatchNorm=BatchNorm))
-            rep.append(BatchNorm(filters))
+            rep.append(SeparableConv2d(filters, filters, 3, 1, dilation))
+            rep.append(batch_norm_cls(filters))
 
         if not grow_first:
             rep.append(self.relu)
-            rep.append(SeparableConv2d(inplanes, planes, 3, 1, dilation, BatchNorm=BatchNorm))
-            rep.append(BatchNorm(planes))
+            rep.append(SeparableConv2d(inplanes, planes, 3, 1, dilation))
+            rep.append(batch_norm_cls(planes))
 
         if stride != 1:
             rep.append(self.relu)
-            rep.append(SeparableConv2d(planes, planes, 3, 2, BatchNorm=BatchNorm))
-            rep.append(BatchNorm(planes))
+            rep.append(SeparableConv2d(planes, planes, 3, 2))
+            rep.append(batch_norm_cls(planes))
 
         if stride == 1 and is_last:
             rep.append(self.relu)
-            rep.append(SeparableConv2d(planes, planes, 3, 1, BatchNorm=BatchNorm))
-            rep.append(BatchNorm(planes))
+            rep.append(SeparableConv2d(planes, planes, 3, 1))
+            rep.append(batch_norm_cls(planes))
 
         if not start_with_relu:  # entry flow has False value
             rep = rep[1:]
@@ -96,8 +94,9 @@ class AlignedXception(nn.Module):
     """
     Modified Alighed Xception
     """
-    def __init__(self, output_stride, BatchNorm, pretrained=True):
+    def __init__(self, output_stride, batch_norm_cls=None, pretrained=True):
         super(AlignedXception, self).__init__()
+        batch_norm_cls = batch_norm_cls if batch_norm_cls else nn.BatchNorm2d
 
         if output_stride == 16:
             entry_block3_stride = 2
@@ -112,64 +111,64 @@ class AlignedXception(nn.Module):
 
         # Entry flow
         self.conv1 = nn.Conv2d(3, 32, 3, stride=2, padding=1, bias=False)
-        self.bn1 = BatchNorm(32)
+        self.bn1 = batch_norm_cls(32)
         self.relu = nn.ReLU(inplace=True)
 
         self.conv2 = nn.Conv2d(32, 64, 3, stride=1, padding=1, bias=False)
-        self.bn2 = BatchNorm(64)
+        self.bn2 = batch_norm_cls(64)
 
-        self.block1 = Block(64, 128, reps=2, stride=2, BatchNorm=BatchNorm, start_with_relu=False)
-        self.block2 = Block(128, 256, reps=2, stride=2, BatchNorm=BatchNorm, start_with_relu=False,
+        self.block1 = Block(64, 128, reps=2, stride=2, batch_norm_cls=batch_norm_cls, start_with_relu=False)
+        self.block2 = Block(128, 256, reps=2, stride=2, batch_norm_cls=batch_norm_cls, start_with_relu=False,
                             grow_first=True)
-        self.block3 = Block(256, 728, reps=2, stride=entry_block3_stride, BatchNorm=BatchNorm,
+        self.block3 = Block(256, 728, reps=2, stride=entry_block3_stride, batch_norm_cls=batch_norm_cls,
                             start_with_relu=True, grow_first=True, is_last=True)
 
         # Middle flow
         self.block4 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
-                             BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
+                            batch_norm_cls=batch_norm_cls, start_with_relu=True, grow_first=True)
         self.block5 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
-                             BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
+                            batch_norm_cls=batch_norm_cls, start_with_relu=True, grow_first=True)
         self.block6 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
-                             BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
+                            batch_norm_cls=batch_norm_cls, start_with_relu=True, grow_first=True)
         self.block7 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
-                             BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
+                            batch_norm_cls=batch_norm_cls, start_with_relu=True, grow_first=True)
         self.block8 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
-                             BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
+                            batch_norm_cls=batch_norm_cls, start_with_relu=True, grow_first=True)
         self.block9 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
-                             BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
+                            batch_norm_cls=batch_norm_cls, start_with_relu=True, grow_first=True)
         self.block10 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
-                             BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
+                             batch_norm_cls=batch_norm_cls, start_with_relu=True, grow_first=True)
         self.block11 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
-                             BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
+                             batch_norm_cls=batch_norm_cls, start_with_relu=True, grow_first=True)
         self.block12 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
-                             BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
+                             batch_norm_cls=batch_norm_cls, start_with_relu=True, grow_first=True)
         self.block13 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
-                             BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
+                             batch_norm_cls=batch_norm_cls, start_with_relu=True, grow_first=True)
         self.block14 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
-                             BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
+                             batch_norm_cls=batch_norm_cls, start_with_relu=True, grow_first=True)
         self.block15 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
-                             BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
+                             batch_norm_cls=batch_norm_cls, start_with_relu=True, grow_first=True)
         self.block16 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
-                             BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
+                             batch_norm_cls=batch_norm_cls, start_with_relu=True, grow_first=True)
         self.block17 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
-                             BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
+                             batch_norm_cls=batch_norm_cls, start_with_relu=True, grow_first=True)
         self.block18 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
-                             BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
+                             batch_norm_cls=batch_norm_cls, start_with_relu=True, grow_first=True)
         self.block19 = Block(728, 728, reps=3, stride=1, dilation=middle_block_dilation,
-                             BatchNorm=BatchNorm, start_with_relu=True, grow_first=True)
+                             batch_norm_cls=batch_norm_cls, start_with_relu=True, grow_first=True)
 
         # Exit flow
         self.block20 = Block(728, 1024, reps=2, stride=1, dilation=exit_block_dilations[0],
-                             BatchNorm=BatchNorm, start_with_relu=True, grow_first=False, is_last=True)
+                             batch_norm_cls=batch_norm_cls, start_with_relu=True, grow_first=False, is_last=True)
 
-        self.conv3 = SeparableConv2d(1024, 1536, 3, stride=1, dilation=exit_block_dilations[1], BatchNorm=BatchNorm)
-        self.bn3 = BatchNorm(1536)
+        self.conv3 = SeparableConv2d(1024, 1536, 3, stride=1, dilation=exit_block_dilations[1])
+        self.bn3 = batch_norm_cls(1536)
 
-        self.conv4 = SeparableConv2d(1536, 1536, 3, stride=1, dilation=exit_block_dilations[1], BatchNorm=BatchNorm)
-        self.bn4 = BatchNorm(1536)
+        self.conv4 = SeparableConv2d(1536, 1536, 3, stride=1, dilation=exit_block_dilations[1])
+        self.bn4 = batch_norm_cls(1536)
 
-        self.conv5 = SeparableConv2d(1536, 2048, 3, stride=1, dilation=exit_block_dilations[1], BatchNorm=BatchNorm)
-        self.bn5 = BatchNorm(2048)
+        self.conv5 = SeparableConv2d(1536, 2048, 3, stride=1, dilation=exit_block_dilations[1])
+        self.bn5 = batch_norm_cls(2048)
 
         # Init weights
         self._init_weight()
