@@ -28,7 +28,7 @@ class PascalPartsDataSet(Dataset):
                  mask_transform=None,
                  is_train=False):
         self.images_dir = os.path.join(root, "VOC2010/JPEGImages/")
-        self.labels_dir = os.path.join(root, "Annotations_Part")
+        self.labels_dir = os.path.join(root, "Merged_Annotations_Part")
 
         self.image_list = []
         if is_train:
