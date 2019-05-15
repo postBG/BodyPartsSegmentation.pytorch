@@ -18,7 +18,7 @@ STATISTICS_SET = {
     'std': [0.229, 0.224, 0.225]
 }
 
-DEFAULT_ROOT = "%s/VOCdevkit/" % expanduser("~")
+DEFAULT_ROOT = "%s/datasets/" % expanduser("~")
 
 
 class PascalPartsDataSet(Dataset):
