@@ -6,6 +6,7 @@ from models.module.aspp import build_aspp
 from models.module.decoder import build_decoder
 from models.backbone import build_backbone
 
+
 class DeepLab(nn.Module):
     def __init__(self, backbone='resnet', output_stride=16, num_classes=21,
                  sync_bn=True, freeze_bn=False):
@@ -13,14 +14,11 @@ class DeepLab(nn.Module):
         if backbone == 'drn':
             output_stride = 8
 
-        if sync_bn == True:
-            BatchNorm = SynchronizedBatchNorm2d
-        else:
-            BatchNorm = nn.BatchNorm2d
+        batch_norm_cls = SynchronizedBatchNorm2d if sync_bn else nn.BatchNorm2d
 
-        self.backbone = build_backbone(backbone, output_stride, BatchNorm)
-        self.aspp = build_aspp(backbone, output_stride, BatchNorm)
-        self.decoder = build_decoder(num_classes, backbone, BatchNorm)
+        self.backbone = build_backbone(backbone, output_stride, batch_norm_cls)
+        self.aspp = build_aspp(backbone, output_stride, batch_norm_cls)
+        self.decoder = build_decoder(num_classes, backbone, batch_norm_cls)
 
         if freeze_bn:
             self.freeze_bn()
@@ -67,5 +65,3 @@ if __name__ == "__main__":
     input = torch.rand(1, 3, 513, 513)
     output = model(input)
     print(output.size())
-
-
