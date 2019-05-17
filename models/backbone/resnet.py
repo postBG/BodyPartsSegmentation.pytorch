@@ -94,7 +94,7 @@ class ResNet(nn.Module):
         layers.append(block(self.inplanes, planes, stride, dilation, downsample, BatchNorm))
         self.inplanes = planes * block.expansion
         for i in range(1, blocks):
-            layers.append(block(self.inplanes, planes, dilation=dilation, BatchNorm=BatchNorm))
+            layers.append(block(self.inplanes, planes, dilation=dilation, batch_norm_cls=BatchNorm))
 
         return nn.Sequential(*layers)
 
@@ -109,11 +109,11 @@ class ResNet(nn.Module):
 
         layers = []
         layers.append(block(self.inplanes, planes, stride, dilation=blocks[0] * dilation,
-                            downsample=downsample, BatchNorm=BatchNorm))
+                            downsample=downsample, batch_norm_cls=BatchNorm))
         self.inplanes = planes * block.expansion
         for i in range(1, len(blocks)):
             layers.append(block(self.inplanes, planes, stride=1,
-                                dilation=blocks[i] * dilation, BatchNorm=BatchNorm))
+                                dilation=blocks[i] * dilation, batch_norm_cls=BatchNorm))
 
         return nn.Sequential(*layers)
 
