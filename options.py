@@ -35,6 +35,7 @@ parser.add_argument('--val_transform_type', type=str, default='val', help='Val d
 parser.add_argument('--class_weight', type=str, default='none', choices=list(CLASS_WEIGHT.keys()), help='class_weight')
 parser.add_argument('--criterion', type=str, default='ce', help='select criterion')
 parser.add_argument('--debug', type=bool, default=False, help='If true, save images for each batch')
+parser.add_argument('--classes', type=int, default=25, help='set the number of classes')
 
 #########################
 # Experiment Logging Settings

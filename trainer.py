@@ -53,6 +53,8 @@ class Trainer(object):
     def train_one_epoch(self, epoch, dataloader, accum_iter):
         self.model.train()
 
+        self.model.backbone.requires_grad = False
+
         self.lr_scheduler.step()
 
         average_meter_set = AverageMeterSet()
@@ -130,9 +132,11 @@ class Trainer(object):
                 'accum_iter': accum_iter,
                 'acc': acc,
                 'mean_iou': mean_iou,
-                'model': self.model
-
+                'model': self.model,
             }
+            with open('merged.txt', 'a') as f:
+                print('epoch:', epoch, 'iou: ', iou, 'miou: ', mean_iou, file=f)
+
             self.logger_service.log_val(log_data)
 
     def _create_state_dict(self):

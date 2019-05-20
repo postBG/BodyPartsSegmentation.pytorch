@@ -1,6 +1,6 @@
 import os
 import pprint as pp
-
+import torch
 import torch.optim as optim
 from tensorboardX import SummaryWriter
 
@@ -44,18 +44,24 @@ def main(args):
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=args.decay_step, gamma=args.gamma)
 
     if args.resume_training:
-        import torch
         exp_dir = os.path.join(args.experiment_dir, args.resume_training)
-        model_dir = 'models/checkpoint-recent.pth'
-        chk = torch.load(os.path.join(exp_dir, model_dir))
-        model.load_state_dict(chk['model_state_dict'])
-        optimizer.load_state_dict(chk['optimizer_state_dict'])
-        for state in optimizer.state.values():
-            for k, v in state.items():
-                if isinstance(v, torch.Tensor):
-                    state[k] = v.to(device)
+        model_dir = 'deeplab-resnet.pth.tar'
+        chk = torch.load(model_dir)
+        model_state = model.state_dict()
+        pretrained_state = chk['state_dict']
+        pretrained_state = {k: v for k, v in pretrained_state.items() if
+                            k in model_state and v.size() == model_state[k].size()}
 
-    trainer = Trainer(model, dataloaders, optimizer, criterion, args.epoch, args, num_classes=25,
+        model_state.update(pretrained_state)
+        model.load_state_dict(model_state)
+        # model.load_state_dict(chk['model_state_dict'])
+        # optimizer.load_state_dict(chk['optimizer_state_dict'])
+        # for state in optimizer.state.values():
+        #     for k, v in state.items():
+        #         if isinstance(v, torch.Tensor):
+        #             state[k] = v.to(device)
+
+    trainer = Trainer(model, dataloaders, optimizer, criterion, args.epoch, args, num_classes=args.classes,
                       log_period_as_iter=args.log_period_as_iter, train_loggers=train_loggers,
                       val_loggers=val_loggers, lr_scheduler=scheduler, device=device)
     trainer.train()
