@@ -14,8 +14,8 @@ def get_joint_transform(transform_type):
         'val': JointCompose([JointResize(513, 513), JointToTensor()]),
         'random': JointCompose([RandomScaleCrop(513, 513),
                                 RandomRotate(),
-                                RandomGaussianBlur(),
-                                RandomHorizontalFlip(),
+                                # RandomGaussianBlur(),
+                                # RandomHorizontalFlip(),
                                 JointToTensor()])
     }
 

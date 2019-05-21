@@ -49,11 +49,11 @@ def set_template(args):
         args.criterion = 'ce'
 
     elif args.template == 'dice':
-        args.resume_training = 'deeplab-resnet.pth.tar'
+        # args.resume_training = 'deeplab-resnet.pth.tar'
         args.backbone = 'resnet'
         args.test = False
         args.batch_size = 4
-        args.lr = 0.00001
+        args.lr = 0.007
         args.epoch = 120
         args.optimizer = 'SGD'
         args.momentum = 0.9
@@ -61,7 +61,7 @@ def set_template(args):
         args.gamma = 0.1
         args.weight_decay = 2e-5
         args.train_transform_type = 'random'
-        args.experiment_description = 'with_pretrained_deeplab'
+        args.experiment_description = 'with_pretrained_deeplab_dice'
         args.criterion = 'dice'
         args.classes = 25
 
@@ -89,7 +89,7 @@ def set_template(args):
         args.test = False
         args.batch_size = 4
         args.lr = 0.00001
-        args.epoch = 120
+        args.epoch = 30
         args.optimizer = 'SGD'
         args.momentum = 0.9
         args.decay_step = 5
@@ -99,6 +99,6 @@ def set_template(args):
         args.experiment_description = 'with_pretrained_deeplab'
         args.criterion = 'ce'
         args.classes = 25
-        args.class_weight = 'proximal_log'
+        args.class_weight = 'naive'
     else:
         raise ValueError("Pick a correct template.")
