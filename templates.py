@@ -65,6 +65,23 @@ def set_template(args):
         args.criterion = 'dice'
         args.classes = 25
 
+    elif args.template == 'lovasz':
+        # args.resume_training = 'deeplab-resnet.pth.tar'
+        args.backbone = 'resnet'
+        args.test = False
+        args.batch_size = 4
+        args.lr = 0.001
+        args.epoch = 120
+        args.optimizer = 'SGD'
+        args.momentum = 0.9
+        args.decay_step = 5
+        args.gamma = 0.1
+        args.weight_decay = 2e-5
+        args.train_transform_type = 'random'
+        args.experiment_description = 'lovasz_loss'
+        args.criterion = 'lovasz'
+        args.classes = 25
+
     elif args.template == 'merged':
         args.resume_training = 'with_merged_annotations_2019-05-18_0'
         args.backbone = 'resnet'
