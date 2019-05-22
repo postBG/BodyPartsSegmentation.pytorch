@@ -66,18 +66,18 @@ def set_template(args):
         args.classes = 25
 
     elif args.template == 'lovasz':
-        # args.resume_training = 'deeplab-resnet.pth.tar'
+        args.resume_training = 'deeplab-resnet.pth.tar'
         args.backbone = 'resnet'
         args.test = False
         args.batch_size = 4
-        args.lr = 0.001
+        args.lr = 5e-4
         args.epoch = 120
         args.optimizer = 'SGD'
         args.momentum = 0.9
         args.decay_step = 5
         args.gamma = 0.1
         args.weight_decay = 2e-5
-        args.train_transform_type = 'random'
+        args.train_transform_type = 'none'
         args.experiment_description = 'lovasz_loss'
         args.criterion = 'lovasz'
         args.classes = 25
