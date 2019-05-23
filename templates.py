@@ -71,14 +71,14 @@ def set_template(args):
         args.test = False
         args.batch_size = 4
         args.lr = 1e-5
-        args.epoch = 120
-        args.optimizer = 'SGD'
+        args.epoch = 40
+        args.optimizer = 'Adam'
         args.momentum = 0.9
         args.decay_step = 5
         args.gamma = 0.1
         args.weight_decay = 2e-5
-        args.train_transform_type = 'none'
-        args.experiment_description = 'lovasz_loss'
+        args.train_transform_type = 'random'
+        args.experiment_description = 'lovasz_loss_adam'
         args.criterion = 'lovasz'
         args.classes = 25
 
