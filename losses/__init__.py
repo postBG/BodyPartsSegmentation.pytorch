@@ -19,4 +19,4 @@ def create_criterion(args):
     elif args.criterion == 'lovasz':
         return LovaszSoftmaxLoss(ignore_index=IGNORE_LABEL)
     else:
-        raise ValueError('Loss {} is not supported.')
+        raise ValueError('Loss {} is not supported.'.format(args.criterion))
