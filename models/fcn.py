@@ -49,7 +49,7 @@ class Fusion2(nn.Module):
         return out
 
 
-class ResFCN(nn.Module):
+class ResFCN(AbstractModel):
     """
     img_size: torch.Size([512, 1024])
     conv_x: torch.Size([1, 64, 256, 512])

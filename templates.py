@@ -66,11 +66,11 @@ def set_template(args):
         args.classes = 25
 
     elif args.template == 'lovasz':
-        args.resume_training = 'deeplab-resnet.pth.tar'
+        args.pretrained_weights = 'experiments/with_pretrained_deeplab_2019-05-18_1/models/best_acc_model.pth'
         args.backbone = 'resnet'
         args.test = False
         args.batch_size = 4
-        args.lr = 5e-4
+        args.lr = 1e-5
         args.epoch = 120
         args.optimizer = 'SGD'
         args.momentum = 0.9
@@ -101,7 +101,7 @@ def set_template(args):
         args.class_weight = 'proximal_log'
 
     elif args.template == 'pretrained':
-        args.resume_training = 'deeplab-resnet.pth.tar'
+        args.pretrained_weights = 'deeplab-resnet.pth.tar'
         args.backbone = 'resnet'
         args.test = False
         args.batch_size = 4

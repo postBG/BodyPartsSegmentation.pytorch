@@ -8,6 +8,10 @@ from loggers import LoggerService
 from misc import AverageMeterSet
 from utils import save_images_for_debugging
 
+OPTIMIZER_STATE_DICT_KEY = 'optimizer_state_dict'
+
+STATE_DICT_KEY = 'model_state_dict'
+
 
 class Trainer(object):
     def __init__(self, model, dataloaders, optimizer, criterion, num_epochs, args, num_classes,
@@ -141,6 +145,6 @@ class Trainer(object):
 
     def _create_state_dict(self):
         return {
-            'model_state_dict': self.model.state_dict(),
-            'optimizer_state_dict': self.optimizer.state_dict(),
+            STATE_DICT_KEY: self.model.state_dict(),
+            OPTIMIZER_STATE_DICT_KEY: self.optimizer.state_dict(),
         }

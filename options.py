@@ -15,6 +15,7 @@ parser.add_argument('--random_seed', type=int, default=0, help='Random seed valu
 # General Train Settings
 #########################
 parser.add_argument('--resume_training', type=str, default='', help='resume training from the folder')
+parser.add_argument('--pretrained_weights', type=str, default='', help='path to pretrained weights checkpoints')
 parser.add_argument('--lr', type=float, default=0.001, help='learning rate (default: 0.001)')
 parser.add_argument('--epoch', type=int, default=100, help='epoch (default: 100)')
 parser.add_argument('--num_gpu', type=int, default=1, help='number of GPUs')

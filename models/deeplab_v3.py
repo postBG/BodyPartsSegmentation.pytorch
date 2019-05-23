@@ -1,13 +1,15 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+
+from models.bases import AbstractModel
 from models.sync_batchnorm.batchnorm import SynchronizedBatchNorm2d
 from models.module.aspp import build_aspp
 from models.module.decoder import build_decoder
 from models.backbone import build_backbone
 
 
-class DeepLab(nn.Module):
+class DeepLab(AbstractModel):
     def __init__(self, backbone='resnet', output_stride=16, num_classes=21,
                  sync_bn=True, freeze_bn=False):
         super(DeepLab, self).__init__()
