@@ -27,15 +27,15 @@ class DiceLoss(object):
         predictions = F.softmax(logits, dim=1)
 
         dims = (0,) + tuple(range(2, logits.ndimension()))
-        intersection_by_classes = weights * torch.sum(predictions * one_hot_targets, dims)
-        cardinality_by_classes = weights * torch.sum(predictions + one_hot_targets, dims)
+        intersection = torch.sum(weights * torch.sum(predictions * one_hot_targets, dims))
+        cardinality = torch.sum(weights * torch.sum(predictions + one_hot_targets, dims))
 
-        loss = 2 * torch.sum(intersection_by_classes) / (torch.sum(cardinality_by_classes) + self.eps)
-        return -loss
+        loss = 1 - 2 * (intersection + self.eps) / (cardinality + self.eps)
+        return loss
 
     def _calculate_weights(self, targets, num_classes, use_weights):
         if not use_weights:
             return torch.Tensor([1. for _ in range(num_classes)]).to(self.device)
 
         num_pixels = torch.Tensor([torch.sum(targets == label) for label in range(num_classes)]).to(self.device)
-        return 1 / (num_pixels + self.eps)
+        return 1 / (num_pixels * num_pixels + self.eps)
