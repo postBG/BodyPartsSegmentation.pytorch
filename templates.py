@@ -12,7 +12,7 @@ def set_template(args):
         args.decay_step = 5
         args.gamma = 0.1
         args.weight_decay = 2e-5
-        args.transform_type = 'none'
+        args.train_transform_type = 'none'
         args.experiment_description = 'with_proximal_log_weighted_ce'
         args.criterion = 'ce'
         args.class_weight = 'proximal_log'
@@ -28,7 +28,7 @@ def set_template(args):
         args.decay_step = 5
         args.gamma = 0.1
         args.weight_decay = 2e-5
-        args.transform_type = 'none'
+        args.train_transform_type = 'none'
         args.experiment_description = 'with_proximal_log_weighted_ce'
         args.criterion = 'ce'
         args.class_weight = 'proximal_log'
@@ -45,11 +45,12 @@ def set_template(args):
         args.weight_decay = 2e-5
         args.train_transform_type = 'none'
         args.seg_model = 'fcn'
-        args.experiment_description = 'with_fcn_res50'
+        args.experiment_description = 'with_fcn_res50_and_dice'
         args.criterion = 'ce'
-        args.class_weight = 'proximal_log'
 
     elif args.template == 'dice':
+        # args.resume_training = 'deeplab-resnet.pth.tar'
+        args.backbone = 'resnet'
         args.test = False
         args.batch_size = 4
         args.lr = 0.007
@@ -59,9 +60,62 @@ def set_template(args):
         args.decay_step = 5
         args.gamma = 0.1
         args.weight_decay = 2e-5
-        args.transform_type = 'none'
-        args.experiment_description = 'with_dice_loss'
+        args.train_transform_type = 'random'
+        args.experiment_description = 'with_pretrained_deeplab_dice'
         args.criterion = 'dice'
+        args.classes = 25
 
+    elif args.template == 'lovasz':
+        args.pretrained_weights = 'experiments/with_pretrained_deeplab_2019-05-18_1/models/best_acc_model.pth'
+        args.backbone = 'resnet'
+        args.test = False
+        args.batch_size = 4
+        args.lr = 1e-5
+        args.epoch = 40
+        args.optimizer = 'Adam'
+        args.momentum = 0.9
+        args.decay_step = 5
+        args.gamma = 0.1
+        args.weight_decay = 2e-5
+        args.train_transform_type = 'random'
+        args.experiment_description = 'lovasz_loss_adam'
+        args.criterion = 'lovasz'
+        args.classes = 25
+
+    elif args.template == 'merged':
+        args.resume_training = 'with_merged_annotations_2019-05-18_0'
+        args.backbone = 'resnet'
+        args.test = False
+        args.batch_size = 4
+        args.lr = 0.001
+        args.epoch = 120
+        args.optimizer = 'SGD'
+        args.momentum = 0.9
+        args.decay_step = 5
+        args.gamma = 0.1
+        args.weight_decay = 2e-5
+        args.train_transform_type = 'random'
+        args.experiment_description = 'with_merged_annotations_after'
+        args.criterion = 'ce'
+        args.classes = 25
+        args.class_weight = 'proximal_log'
+
+    elif args.template == 'pretrained':
+        args.pretrained_weights = 'deeplab-resnet.pth.tar'
+        args.backbone = 'resnet'
+        args.test = False
+        args.batch_size = 4
+        args.lr = 0.00001
+        args.epoch = 30
+        args.optimizer = 'SGD'
+        args.momentum = 0.9
+        args.decay_step = 5
+        args.gamma = 0.1
+        args.weight_decay = 2e-5
+        args.train_transform_type = 'random'
+        args.experiment_description = 'with_pretrained_deeplab'
+        args.criterion = 'ce'
+        args.classes = 25
+        args.class_weight = 'naive'
     else:
         raise ValueError("Pick a correct template.")

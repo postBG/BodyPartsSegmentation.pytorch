@@ -8,6 +8,10 @@ from loggers import LoggerService
 from misc import AverageMeterSet
 from utils import save_images_for_debugging
 
+OPTIMIZER_STATE_DICT_KEY = 'optimizer_state_dict'
+
+STATE_DICT_KEY = 'model_state_dict'
+
 
 class Trainer(object):
     def __init__(self, model, dataloaders, optimizer, criterion, num_epochs, args, num_classes,
@@ -37,8 +41,8 @@ class Trainer(object):
 
     def train(self):
         accum_iter = 0
-        # debug
-        # self.validate(0, self.dataloaders['val'], accum_iter)
+
+        self.validate(0, self.dataloaders['val'], accum_iter)
         for epoch in range(self.num_epochs):
             for phase in ['train', 'val']:
                 if phase == 'train':
@@ -52,6 +56,8 @@ class Trainer(object):
 
     def train_one_epoch(self, epoch, dataloader, accum_iter):
         self.model.train()
+
+        self.model.backbone.requires_grad = False
 
         self.lr_scheduler.step()
 
@@ -130,13 +136,15 @@ class Trainer(object):
                 'accum_iter': accum_iter,
                 'acc': acc,
                 'mean_iou': mean_iou,
-                'model': self.model
-
+                'model': self.model,
             }
+            with open('merged.txt', 'a') as f:
+                print('epoch:', epoch, 'iou: ', iou, 'miou: ', mean_iou, file=f)
+
             self.logger_service.log_val(log_data)
 
     def _create_state_dict(self):
         return {
-            'model_state_dict': self.model.state_dict(),
-            'optimizer_state_dict': self.optimizer.state_dict(),
+            STATE_DICT_KEY: self.model.state_dict(),
+            OPTIMIZER_STATE_DICT_KEY: self.optimizer.state_dict(),
         }

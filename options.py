@@ -15,6 +15,7 @@ parser.add_argument('--random_seed', type=int, default=0, help='Random seed valu
 # General Train Settings
 #########################
 parser.add_argument('--resume_training', type=str, default='', help='resume training from the folder')
+parser.add_argument('--pretrained_weights', type=str, default='', help='path to pretrained weights checkpoints')
 parser.add_argument('--lr', type=float, default=0.001, help='learning rate (default: 0.001)')
 parser.add_argument('--epoch', type=int, default=100, help='epoch (default: 100)')
 parser.add_argument('--num_gpu', type=int, default=1, help='number of GPUs')
@@ -35,6 +36,7 @@ parser.add_argument('--val_transform_type', type=str, default='val', help='Val d
 parser.add_argument('--class_weight', type=str, default='none', choices=list(CLASS_WEIGHT.keys()), help='class_weight')
 parser.add_argument('--criterion', type=str, default='ce', help='select criterion')
 parser.add_argument('--debug', type=bool, default=False, help='If true, save images for each batch')
+parser.add_argument('--classes', type=int, default=25, help='set the number of classes')
 
 #########################
 # Experiment Logging Settings

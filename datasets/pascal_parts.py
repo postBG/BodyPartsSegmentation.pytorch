@@ -4,10 +4,13 @@ from os.path import expanduser
 from PIL import Image
 from torch.utils.data import Dataset
 
+CLASS_RATE = [603.7, 41.7, 12.3, 6.0, 4.5, 1.5, 1.0, 4.7, 1.8, 6.0, 20.0, 60.8, 4.5, 6.0, 11.2, 3.7, 6.0, 11.7, 4.0,
+              4.7, 9.8, 4.5, 4.7, 9.5, 1.3]
+INVERTED_RATE = [1 / x for x in CLASS_RATE]
+
 CLASS_WEIGHT = {
     'none': [1.] * 25,
-    'naive': [1.3, 33.04, 2639.53, 2965.59, 1654.45, 1754.02, 4482.05, 4276.17, 532.41, 884.94, 41.84, 13.46,
-              207.41, 144.33, 71.36, 235.35, 134.06, 69.87, 205.03, 180.2, 85.01, 581.61, 189.39, 82.6, 568.89],
+    'naive': [x * sum(INVERTED_RATE) for x in INVERTED_RATE],
     'proximal_log': [0.5, 2.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 8.0, 10.0, 5.0, 2.0, 5.0, 5.0, 5.0, 5.0, 5.0,
                      5.0, 5.0, 5.0, 5.0, 8.0, 5.0, 5.0, 8.0]
 }
@@ -18,7 +21,7 @@ STATISTICS_SET = {
     'std': [0.229, 0.224, 0.225]
 }
 
-DEFAULT_ROOT = "%s/VOCdevkit/" % expanduser("~")
+DEFAULT_ROOT = "%s/datasets/" % expanduser("~")
 
 
 class PascalPartsDataSet(Dataset):
