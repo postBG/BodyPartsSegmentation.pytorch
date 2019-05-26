@@ -74,7 +74,7 @@ class Trainer(object):
             self.optimizer.zero_grad()
 
             # Source CE Loss
-            logits = self.model(inputs)
+            logits = self.model(inputs, is_test=False)
             loss = self.criterion(logits, gt_mask)
             loss.backward()
 
@@ -117,7 +117,7 @@ class Trainer(object):
             for batch_idx, (target_inputs, target_gt_mask) in enumerate(tqdm_dataloader):
                 target_inputs, target_gt_mask = target_inputs.to(self.device), target_gt_mask.numpy()
 
-                target_logits = self.model(target_inputs)
+                target_logits = self.model(target_inputs, is_test=True)
                 _, target_predictions = target_logits.max(1)
                 target_predictions = target_predictions.cpu().numpy()
 

@@ -25,13 +25,29 @@ class DeepLab(AbstractModel):
         if freeze_bn:
             self.freeze_bn()
 
-    def forward(self, input):
+    def forward(self, input, is_test=False):
         x, low_level_feat = self.backbone(input)
         x = self.aspp(x)
         x = self.decoder(x, low_level_feat)
-        x = F.interpolate(x, size=input.size()[2:], mode='bilinear', align_corners=True)
 
-        return x
+        output = F.interpolate(x, size=input.size()[2:], mode='bilinear', align_corners=True)
+
+        if is_test:
+            y = F.interpolate(input, size=0.5 * input.size()[2:], mode='bilinear', align_corners=True)
+            y, low_level_feat = self.backbone(y)
+            y = self.aspp(y)
+            y = self.decoder(y, low_level_feat)
+            output2 = F.interpolate(y, size=input.size()[2:], mode='bilinear', align_corners=True)
+
+            z = F.interpolate(input, size=0.5 * 0.5 * input.size()[2:], mode='bilinear', align_corners=True)
+            z, low_level_feat = self.backbone(z)
+            z = self.aspp(z)
+            z = self.decoder(z, low_level_feat)
+            output3 = F.interpolate(z, size=input.size()[2:], mode='bilinear', align_corners=True)
+
+            output = (output + output2 + output3) / 3
+
+        return output
 
     def freeze_bn(self):
         for m in self.modules():
