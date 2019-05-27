@@ -66,9 +66,9 @@ def set_template(args):
         args.classes = 25
 
     elif args.template == 'lovasz':
-        args.pretrained_weights = 'experiments/with_pretrained_deeplab_2019-05-18_1/models/best_acc_model.pth'
+        args.pretrained_weights = '../seg_seungmin/experiments/lovasz_loss_adam_2019-05-24_0/models/best_acc_model.pth'  #05-18_1 with_pretrained_deeplab_2019-05-24_0
         args.backbone = 'resnet'
-        args.test = False
+        args.test = True
         args.batch_size = 4
         args.lr = 1e-5
         args.epoch = 40
@@ -79,6 +79,23 @@ def set_template(args):
         args.weight_decay = 2e-5
         args.train_transform_type = 'random'
         args.experiment_description = 'lovasz_loss_adam'
+        args.criterion = 'lovasz'
+        args.classes = 25
+
+    elif args.template == 'lovasz_multi':
+        args.resume_training = 'experiments/lovasz_loss_adam_2019-05-24_0'
+        args.backbone = 'resnet'
+        args.test = True
+        args.batch_size = 4
+        args.lr = 1e-5
+        args.epoch = 40
+        args.optimizer = 'Adam'
+        args.momentum = 0.9
+        args.decay_step = 5
+        args.gamma = 0.1
+        args.weight_decay = 2e-5
+        args.train_transform_type = 'random'
+        args.experiment_description = 'lovasz_loss_adam_multi_scale_pred'
         args.criterion = 'lovasz'
         args.classes = 25
 

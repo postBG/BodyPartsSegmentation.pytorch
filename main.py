@@ -57,9 +57,13 @@ def main(args):
 
 
 def setup_to_resume(args, model, optimizer):
-    chk_dict = torch.load(os.path.join(os.path.abspath(args.resume_training), 'models/checkpoint-recent.pth'))
+    chk_dict = torch.load(os.path.join(os.path.abspath(args.resume_training), 'models/best_acc_model.pth '))  # checkpoint-recent.pth'))
     model.load_state_dict(chk_dict[STATE_DICT_KEY])
     optimizer.load_state_dict(chk_dict[OPTIMIZER_STATE_DICT_KEY])
+    for state in optimizer.state.values():
+        for k, v in state.items():
+            if isinstance(v, torch.Tensor):
+                state[k] = v.cuda()
 
 
 def load_pretrained_weights(args, model):

@@ -2,6 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 from tqdm import tqdm
+import torch.nn.functional as F
 
 from metrics import eval_seg_metrics
 from loggers import LoggerService
@@ -118,6 +119,18 @@ class Trainer(object):
                 target_inputs, target_gt_mask = target_inputs.to(self.device), target_gt_mask.numpy()
 
                 target_logits = self.model(target_inputs, is_test=True)
+                print(type(target_logits))
+
+                # h, w = target_inputs.size()[2:]
+                # target_input2 = F.interpolate(target_inputs, size=[h * 2, w * 2], mode='bilinear', align_corners=True)
+                # target_input3 = F.interpolate(target_inputs, size=[h * 2 * 2, w * 2 * 2], mode='bilinear', align_corners=True)
+                # target_logits2 = self.model(target_input2)
+                # target_logits3 = self.model(target_input3)
+                # target_logits2 = F.interpolate(target_logits2, size=[h * 2, w * 2], mode='bilinear', align_corners=True)
+                # target_logits3 = F.interpolate(target_logits3, size=[h * 2, w * 2], mode='bilinear', align_corners=True)
+                #
+                # target_logits = target_logits + target_logits2 + target_logits3
+
                 _, target_predictions = target_logits.max(1)
                 target_predictions = target_predictions.cpu().numpy()
 

@@ -32,14 +32,15 @@ class DeepLab(AbstractModel):
 
         output = F.interpolate(x, size=input.size()[2:], mode='bilinear', align_corners=True)
 
-        if is_test:
-            y = F.interpolate(input, size=0.5 * input.size()[2:], mode='bilinear', align_corners=True)
+        if False and is_test:
+            h, w = input.size()[2:]
+            y = F.interpolate(input, size=[h // 2, w // 2], mode='bilinear', align_corners=True)
             y, low_level_feat = self.backbone(y)
             y = self.aspp(y)
             y = self.decoder(y, low_level_feat)
             output2 = F.interpolate(y, size=input.size()[2:], mode='bilinear', align_corners=True)
 
-            z = F.interpolate(input, size=0.5 * 0.5 * input.size()[2:], mode='bilinear', align_corners=True)
+            z = F.interpolate(input, size=[2 * h, 2 * w], mode='bilinear', align_corners=True)
             z, low_level_feat = self.backbone(z)
             z = self.aspp(z)
             z = self.decoder(z, low_level_feat)
