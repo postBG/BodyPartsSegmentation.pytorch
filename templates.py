@@ -83,10 +83,10 @@ def set_template(args):
         args.classes = 25
 
     elif args.template == 'lovasz_multi':
-        args.resume_training = 'experiments/lovasz_loss_adam_2019-05-24_0'
+        # args.resume_training = 'experiments/lovasz_loss_adam_2019-05-24_0'
         args.backbone = 'resnet'
         args.test = True
-        args.batch_size = 4
+        args.batch_size = 1
         args.lr = 1e-5
         args.epoch = 40
         args.optimizer = 'Adam'
