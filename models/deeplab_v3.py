@@ -30,7 +30,7 @@ class DeepLab(AbstractModel):
         if freeze_bn:
             self.freeze_bn()
 
-    def forward(self, input, is_test=False):
+    def forward(self, input):
         x, low_level_feat = self.backbone(input)
         x = self.aspp(x)
         x = self.decoder(x, low_level_feat)
@@ -48,13 +48,14 @@ class DeepLab(AbstractModel):
         z = self.aspp(z)
         z = self.decoder(z, low_level_feat3)
 
-        resize_feat1 = F.interpolate(low_level_feat, size=input.size()[2:], mode='bilinear', align_corners=True)
-        resize_feat2 = F.interpolate(low_level_feat2, size=input.size()[2:], mode='bilinear', align_corners=True)
-        resize_feat3 = F.interpolate(low_level_feat3, size=input.size()[2:], mode='bilinear', align_corners=True)
-        merged_feat = torch.cat([resize_feat1, resize_feat2, resize_feat3], dim=1)
+        #resize_feat1 = F.interpolate(low_level_feat, size=input.size()[2:], mode='bilinear', align_corners=True)
+        resize_feat2 = F.interpolate(low_level_feat2, size=low_level_feat.size()[2:], mode='bilinear', align_corners=True)
+        resize_feat3 = F.interpolate(low_level_feat3, size=low_level_feat.size()[2:], mode='bilinear', align_corners=True)
+        merged_feat = torch.cat([low_level_feat, resize_feat2, resize_feat3], dim=1)
 
         attention_map = self.attention(merged_feat)
         scale_weight_map = self.softmax2d(attention_map)
+        scale_weight_map = F.interpolate(scale_weight_map, size=input.size()[2:], mode='bilinear', align_corners=True)
 
         output1 = F.interpolate(x, size=input.size()[2:], mode='bilinear', align_corners=True)
         output2 = F.interpolate(y, size=input.size()[2:], mode='bilinear', align_corners=True)

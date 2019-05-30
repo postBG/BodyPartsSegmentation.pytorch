@@ -75,7 +75,7 @@ class Trainer(object):
             self.optimizer.zero_grad()
 
             # Source CE Loss
-            logits = self.model(inputs, is_test=False)
+            logits = self.model(inputs)
             loss = self.criterion(logits, gt_mask)
             loss.backward()
 
@@ -118,18 +118,7 @@ class Trainer(object):
             for batch_idx, (target_inputs, target_gt_mask) in enumerate(tqdm_dataloader):
                 target_inputs, target_gt_mask = target_inputs.to(self.device), target_gt_mask.numpy()
 
-                target_logits = self.model(target_inputs, is_test=True)
-                print(type(target_logits))
-
-                # h, w = target_inputs.size()[2:]
-                # target_input2 = F.interpolate(target_inputs, size=[h * 2, w * 2], mode='bilinear', align_corners=True)
-                # target_input3 = F.interpolate(target_inputs, size=[h * 2 * 2, w * 2 * 2], mode='bilinear', align_corners=True)
-                # target_logits2 = self.model(target_input2)
-                # target_logits3 = self.model(target_input3)
-                # target_logits2 = F.interpolate(target_logits2, size=[h * 2, w * 2], mode='bilinear', align_corners=True)
-                # target_logits3 = F.interpolate(target_logits3, size=[h * 2, w * 2], mode='bilinear', align_corners=True)
-                #
-                # target_logits = target_logits + target_logits2 + target_logits3
+                target_logits = self.model(target_inputs)
 
                 _, target_predictions = target_logits.max(1)
                 target_predictions = target_predictions.cpu().numpy()

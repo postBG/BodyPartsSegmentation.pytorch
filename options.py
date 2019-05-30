@@ -27,7 +27,7 @@ parser.add_argument('--gamma', type=float, default=0.1, help='learning rate deca
 parser.add_argument('--log_period_as_iter', type=int, default=1000, help='num iter')
 parser.add_argument('--validation_period_as_iter', type=int, default=1000, help='validation period in iterations')
 parser.add_argument('--test', type=bool, default=False, help='is Test')
-parser.add_argument('--batch_size', type=int, default=4, help='Batch Size')
+parser.add_argument('--batch_size', type=int, default=2, help='Batch Size')
 parser.add_argument('--optimizer', type=str, default='SGD', choices=['SGD', 'Adam'], help='Optimizer')
 parser.add_argument('--backbone', type=str, default='xception', help='Model: resnet50 | resnet101 | resnet152')
 parser.add_argument('--seg_model', type=str, default='deeplab_v3', help='Seg Model (default: deeplab_v3)')

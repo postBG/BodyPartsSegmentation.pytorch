@@ -36,8 +36,8 @@ def dataloaders_factory(train_dataset, val_dataset, batch_size, test_mode=False)
         val_dataset = Subset(val_dataset, np.random.randint(0, len(val_dataset), batch_size * 5))
 
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, num_workers=32, shuffle=True,
-                                  pin_memory=True)
-    val_dataloader = DataLoader(val_dataset, batch_size=batch_size, num_workers=16, shuffle=False, pin_memory=True)
+                                  pin_memory=True) # check this
+    val_dataloader = DataLoader(val_dataset, batch_size=batch_size, num_workers=32, shuffle=False, pin_memory=True)
 
     return {
         'train': train_dataloader,

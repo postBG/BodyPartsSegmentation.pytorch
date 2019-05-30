@@ -82,20 +82,19 @@ def set_template(args):
         args.criterion = 'lovasz'
         args.classes = 25
 
-    elif args.template == 'lovasz_multi':
-        # args.resume_training = 'experiments/lovasz_loss_adam_2019-05-24_0'
+    elif args.template == 'lovasz_attention':
         args.backbone = 'resnet'
-        args.test = True
-        args.batch_size = 1
-        args.lr = 1e-5
+        args.test = False
+        args.batch_size = 2
+        args.lr = 1e-3
         args.epoch = 40
-        args.optimizer = 'Adam'
+        args.optimizer = 'SGD'
         args.momentum = 0.9
         args.decay_step = 5
         args.gamma = 0.1
-        args.weight_decay = 2e-5
+        args.weight_decay = 5e-4
         args.train_transform_type = 'random'
-        args.experiment_description = 'lovasz_loss_adam_multi_scale_pred'
+        args.experiment_description = 'lovasz_attention'
         args.criterion = 'lovasz'
         args.classes = 25
 
