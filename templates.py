@@ -87,10 +87,10 @@ def set_template(args):
         args.test = False
         args.batch_size = 2
         args.lr = 1e-3
-        args.epoch = 40
+        args.epoch = 60
         args.optimizer = 'SGD'
         args.momentum = 0.9
-        args.decay_step = 5
+        args.decay_step = 20
         args.gamma = 0.1
         args.weight_decay = 5e-4
         args.train_transform_type = 'random'

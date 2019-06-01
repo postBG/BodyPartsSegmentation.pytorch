@@ -67,6 +67,8 @@ class Trainer(object):
 
         for batch_idx, (inputs, gt_mask) in enumerate(tqdm_dataloader):
             batch_size = inputs.size(0)
+            if batch_size == 1:
+                continue
             inputs, gt_mask = inputs.to(self.device), gt_mask.type(torch.LongTensor).to(self.device)
 
             if self.debug:
