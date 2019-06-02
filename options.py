@@ -37,6 +37,7 @@ parser.add_argument('--class_weight', type=str, default='none', choices=list(CLA
 parser.add_argument('--criterion', type=str, default='ce', help='select criterion')
 parser.add_argument('--debug', type=bool, default=False, help='If true, save images for each batch')
 parser.add_argument('--classes', type=int, default=25, help='set the number of classes')
+parser.add_argument('--crf', type=bool, default=False, help='using CRF or not')
 
 #########################
 # Experiment Logging Settings

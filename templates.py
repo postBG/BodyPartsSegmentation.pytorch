@@ -66,12 +66,12 @@ def set_template(args):
         args.classes = 25
 
     elif args.template == 'lovasz':
-        args.pretrained_weights = 'experiments/with_pretrained_deeplab_2019-05-18_1/models/best_acc_model.pth'
+        args.pretrained_weights = 'experiments/lovasz_loss_adam_2019-05-24_0/models/best_acc_model.pth'
         args.backbone = 'resnet'
         args.test = False
         args.batch_size = 4
         args.lr = 1e-5
-        args.epoch = 40
+        args.epoch = 1
         args.optimizer = 'Adam'
         args.momentum = 0.9
         args.decay_step = 5
@@ -81,6 +81,7 @@ def set_template(args):
         args.experiment_description = 'lovasz_loss_adam'
         args.criterion = 'lovasz'
         args.classes = 25
+        args.crf = True
 
     elif args.template == 'merged':
         args.resume_training = 'with_merged_annotations_2019-05-18_0'
