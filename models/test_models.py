@@ -12,6 +12,7 @@ class DeepLabTest(unittest.TestCase):
     def test_input_output_shapes(self):
         inputs = torch.randn(1, 3, 513, 513)
         model = DeepLab(backbone='xception', output_stride=16, num_classes=6, freeze_bn=False)
+        model.eval()
         with torch.no_grad():
             output = model(inputs)
         self.assertTupleEqual((1, 6, 513, 513), output.size())
@@ -22,6 +23,7 @@ class DeepLabTest(unittest.TestCase):
             'seg_model': 'deeplab_v3',
             'backbone': 'xception'
         }))
+        model.eval()
         with torch.no_grad():
             output = model(inputs)
         self.assertTupleEqual((1, 25, 513, 513), output.size())
