@@ -134,5 +134,23 @@ def set_template(args):
         args.criterion = 'ce'
         args.classes = 25
         args.class_weight = 'naive'
+
+    elif args.template == 'drn':
+        args.backbone = 'drn'
+        args.test = False
+        args.batch_size = 4
+        args.lr = 0.00001
+        args.epoch = 30
+        args.optimizer = 'SGD'
+        args.momentum = 0.9
+        args.decay_step = 5
+        args.gamma = 0.1
+        args.weight_decay = 2e-5
+        args.train_transform_type = 'random'
+        args.experiment_description = 'with_pretrained_drn'
+        args.criterion = 'ce'
+        args.classes = 25
+        args.class_weight = 'proximal_log'
+
     else:
         raise ValueError("Pick a correct template.")
