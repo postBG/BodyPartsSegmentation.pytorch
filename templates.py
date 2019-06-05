@@ -17,6 +17,22 @@ def set_template(args):
         args.criterion = 'ce'
         args.class_weight = 'proximal_log'
 
+    elif args.template == 'xception':
+        args.pretrained_weights = 'experiments/xception_log_prob_2019-06-05_0/models/best_acc_model.pth'
+        args.test = False
+        args.batch_size = 2
+        args.lr = 0.00001
+        args.epoch = 120
+        args.optimizer = 'SGD'
+        args.momentum = 0.9
+        args.decay_step = 5
+        args.gamma = 0.1
+        args.weight_decay = 2e-5
+        args.train_transform_type = 'none'
+        args.experiment_description = 'xception_log_prob'
+        args.criterion = 'ce'
+        args.class_weight = 'proximal_log'
+
     elif args.template == 'resnet101_backbone':
         args.backbone = 'resnet'
         args.test = False
