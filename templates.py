@@ -136,6 +136,7 @@ def set_template(args):
         args.class_weight = 'naive'
 
     elif args.template == 'drn':
+        args.pretrained_weights = 'with_pretrained_drn_2019-06-06_1/models/best_acc_model.pth'
         args.backbone = 'drn'
         args.test = False
         args.batch_size = 4
@@ -147,7 +148,7 @@ def set_template(args):
         args.gamma = 0.1
         args.weight_decay = 2e-5
         args.train_transform_type = 'random'
-        args.experiment_description = 'with_pretrained_drn'
+        args.experiment_description = 'with_pretrained_drn_decay'
         args.criterion = 'ce'
         args.classes = 25
         args.class_weight = 'proximal_log'
