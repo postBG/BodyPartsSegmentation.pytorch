@@ -11,6 +11,11 @@ class AbstractModel(nn.Module, ABC):
         valid_state_dict = {k: v for k, v in state_dict.items() if
                             k in old_state_dict and v.size() == old_state_dict[k].size()}
         old_state_dict.update(valid_state_dict)
+
+        for k, v in old_state_dict.items():
+            name = k.replace("module.", "")
+            old_state_dict[name] = v
+
         super().load_state_dict(old_state_dict, strict=strict)
 
     def initialize_parameters(self):
