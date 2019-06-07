@@ -136,22 +136,21 @@ def set_template(args):
         args.class_weight = 'naive'
 
     elif args.template == 'drn':
-        args.pretrained_weights = 'with_pretrained_drn_2019-06-06_1/models/best_acc_model.pth'
+        args.pretrained_weights = 'experiments/with_pretrained_drn_2019-06-06_1/models/best_acc_model.pth'
         args.backbone = 'drn'
         args.test = False
-        args.batch_size = 4
-        args.lr = 0.00001
+        args.batch_size = 2
+        args.lr = 0.0001
         args.epoch = 30
-        args.optimizer = 'SGD'
+        args.optimizer = 'Adam'
         args.momentum = 0.9
         args.decay_step = 5
         args.gamma = 0.1
         args.weight_decay = 2e-5
-        args.train_transform_type = 'random'
-        args.experiment_description = 'with_pretrained_drn_decay'
-        args.criterion = 'ce'
+        args.train_transform_type = 'none'
+        args.experiment_description = 'with_pretrained_drn_lovasz'
+        args.criterion = 'lovasz'
         args.classes = 25
-        args.class_weight = 'proximal_log'
 
     else:
         raise ValueError("Pick a correct template.")

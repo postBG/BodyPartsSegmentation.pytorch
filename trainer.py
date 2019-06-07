@@ -44,7 +44,7 @@ class Trainer(object):
     def train(self):
         accum_iter = 0
 
-        self.validate(0, self.dataloaders['val'], accum_iter)
+        # self.validate(0, self.dataloaders['val'], accum_iter)
         for epoch in range(self.num_epochs):
             # for phase in ['train', 'val']:
             for phase in ['train', 'val']:
