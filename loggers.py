@@ -135,7 +135,7 @@ class ImagePrinter(AbstractBaseLogger):
         with torch.no_grad():
             img = img.to('cuda' if torch.cuda.is_available() else 'cpu')
             model.eval()
-            output = model(img.unsqueeze(0))
+            output, x, y, z = model(img.unsqueeze(0))
             prediction = output.data.max(1)[1].cpu().numpy()
             if is_train:
                 model.train()

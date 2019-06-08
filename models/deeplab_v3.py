@@ -63,7 +63,7 @@ class DeepLab(AbstractModel):
 
         output = scale_weight_map[:, 0:1, ...] * output1 + scale_weight_map[:, 1:2, ...] * output2 + scale_weight_map[:, 2:3, ...] * output3
 
-        return output
+        return output, x, y, z
 
     def freeze_bn(self):
         for m in self.modules():

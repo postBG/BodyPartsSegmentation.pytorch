@@ -82,7 +82,7 @@ def set_template(args):
         args.criterion = 'lovasz'
         args.classes = 25
 
-    elif args.template == 'lovasz_attention':
+    elif args.template == 'ce_attention':
         args.backbone = 'resnet'
         args.test = False
         args.batch_size = 2
@@ -90,12 +90,13 @@ def set_template(args):
         args.epoch = 60
         args.optimizer = 'SGD'
         args.momentum = 0.9
-        args.decay_step = 20
+        args.decay_step = 15
         args.gamma = 0.1
-        args.weight_decay = 5e-4
+        args.weight_decay = 2e-5
         args.train_transform_type = 'random'
         args.experiment_description = 'lovasz_attention'
-        args.criterion = 'lovasz'
+        args.criterion = 'ce'
+        args.class_weight = 'proximal_log'
         args.classes = 25
 
     elif args.template == 'merged':

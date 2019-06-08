@@ -77,8 +77,20 @@ class Trainer(object):
             self.optimizer.zero_grad()
 
             # Source CE Loss
-            logits = self.model(inputs)
+            logits, extra1, extra2, extra3 = self.model(inputs)
+            attention_scales = [1.0, 0.75, 0.5]
+            h, w = inputs.size()[2:]
+            gt_ext1 = F.interpolate(gt_mask.unsqueeze(0).type(torch.FloatTensor), size=extra1.size()[2:], mode='nearest')
+            gt_ext2 = F.interpolate(gt_mask.unsqueeze(0).type(torch.FloatTensor), size=extra2.size()[2:], mode='nearest')
+            gt_ext3 = F.interpolate(gt_mask.unsqueeze(0).type(torch.FloatTensor), size=extra3.size()[2:], mode='nearest')
+
             loss = self.criterion(logits, gt_mask)
+            loss_ext1 = self.criterion(extra1, gt_ext1.squeeze().type(torch.LongTensor).to(self.device))
+            loss_ext2 = self.criterion(extra2, gt_ext2.squeeze().type(torch.LongTensor).to(self.device))
+            loss_ext3 = self.criterion(extra3, gt_ext3.squeeze().type(torch.LongTensor).to(self.device))
+
+            loss += (loss_ext1 + loss_ext2 + loss_ext3)
+
             loss.backward()
 
             self.optimizer.step()
@@ -120,7 +132,7 @@ class Trainer(object):
             for batch_idx, (target_inputs, target_gt_mask) in enumerate(tqdm_dataloader):
                 target_inputs, target_gt_mask = target_inputs.to(self.device), target_gt_mask.numpy()
 
-                target_logits = self.model(target_inputs)
+                target_logits, x, y, z = self.model(target_inputs)
 
                 _, target_predictions = target_logits.max(1)
                 target_predictions = target_predictions.cpu().numpy()
