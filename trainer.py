@@ -77,9 +77,8 @@ class Trainer(object):
             self.optimizer.zero_grad()
 
             # Source CE Loss
+            # Added Extra Supervision fo each Scale
             logits, extra1, extra2, extra3 = self.model(inputs)
-            attention_scales = [1.0, 0.75, 0.5]
-            h, w = inputs.size()[2:]
             gt_ext1 = F.interpolate(gt_mask.unsqueeze(0).type(torch.FloatTensor), size=extra1.size()[2:], mode='nearest')
             gt_ext2 = F.interpolate(gt_mask.unsqueeze(0).type(torch.FloatTensor), size=extra2.size()[2:], mode='nearest')
             gt_ext3 = F.interpolate(gt_mask.unsqueeze(0).type(torch.FloatTensor), size=extra3.size()[2:], mode='nearest')
@@ -132,7 +131,7 @@ class Trainer(object):
             for batch_idx, (target_inputs, target_gt_mask) in enumerate(tqdm_dataloader):
                 target_inputs, target_gt_mask = target_inputs.to(self.device), target_gt_mask.numpy()
 
-                target_logits, x, y, z = self.model(target_inputs)
+                target_logits, _, _, _ = self.model(target_inputs)
 
                 _, target_predictions = target_logits.max(1)
                 target_predictions = target_predictions.cpu().numpy()
