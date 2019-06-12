@@ -7,6 +7,7 @@ from tensorboardX import SummaryWriter
 from datasets import dataloaders_factory, dataset_factory
 from loggers import MetricGraphPrinter, RecentModelLogger, BestModelLogger, ImagePrinter
 from losses import create_criterion
+from lovasz_trainer import SingleScaleTrainer
 from misc import create_experiment_export_folder, export_experiments_config_as_json, fix_random_seed_as, set_up_gpu
 from models import model_factory
 from options import args as parsed_args
@@ -49,15 +50,24 @@ def main(args):
         setup_to_resume(args, model, optimizer)
 
     scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=args.decay_step, gamma=args.gamma)
-    trainer = Trainer(model, dataloaders, optimizer, criterion, args.epoch, args, num_classes=args.classes,
-                      log_period_as_iter=args.log_period_as_iter, train_loggers=train_loggers,
-                      val_loggers=val_loggers, lr_scheduler=scheduler, device=device)
+    trainer_cls = get_trainer_cls(args)
+    trainer = trainer_cls(model, dataloaders, optimizer, criterion, args.epoch, args, num_classes=args.classes,
+                          log_period_as_iter=args.log_period_as_iter, train_loggers=train_loggers,
+                          val_loggers=val_loggers, lr_scheduler=scheduler, device=device)
     trainer.train()
     writer.close()
 
 
+def get_trainer_cls(args):
+    if args.criterion == 'lovasz':
+        return SingleScaleTrainer
+
+    return Trainer
+
+
 def setup_to_resume(args, model, optimizer):
-    chk_dict = torch.load(os.path.join(os.path.abspath(args.resume_training), 'models/best_acc_model.pth '))  # checkpoint-recent.pth'))
+    chk_dict = torch.load(
+        os.path.join(os.path.abspath(args.resume_training), 'models/best_acc_model.pth '))  # checkpoint-recent.pth'))
     model.load_state_dict(chk_dict[STATE_DICT_KEY])
     optimizer.load_state_dict(chk_dict[OPTIMIZER_STATE_DICT_KEY])
     for state in optimizer.state.values():

@@ -66,10 +66,10 @@ def set_template(args):
         args.classes = 25
 
     elif args.template == 'lovasz':
-        args.pretrained_weights = '../seg_seungmin/experiments/lovasz_loss_adam_2019-05-24_0/models/best_acc_model.pth'  #05-18_1 with_pretrained_deeplab_2019-05-24_0
+        args.pretrained_weights = '../seg_hong/experiments/lovasz_attention_2019-06-08_0/models/best_acc_model.pth'
         args.backbone = 'resnet'
-        args.test = True
-        args.batch_size = 4
+        args.test = False
+        args.batch_size = 2
         args.lr = 1e-5
         args.epoch = 40
         args.optimizer = 'Adam'
@@ -78,7 +78,7 @@ def set_template(args):
         args.gamma = 0.1
         args.weight_decay = 2e-5
         args.train_transform_type = 'random'
-        args.experiment_description = 'lovasz_loss_adam'
+        args.experiment_description = 'lovasz_loss_adam_attention'
         args.criterion = 'lovasz'
         args.classes = 25
 
